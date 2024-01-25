@@ -26,12 +26,14 @@ func main() {
 	render.NewTemplates(&app)
 	handlers.NewHandlers(repo)
 
-	http.HandleFunc("/", handlers.Repo.Home)
-	http.HandleFunc("/about", handlers.Repo.About)
+	log.Printf("Starting the server on port %v...\n", port)
 
- 	log.Printf("Starting the server on port %v\n", port)
+	server := &http.Server{
+		Addr:    port,
+		Handler: routes(&app),
+	}
 
-	if err := http.ListenAndServe(port, nil); err != nil {
+	if err := server.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
 }
