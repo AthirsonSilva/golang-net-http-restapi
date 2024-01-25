@@ -6,15 +6,26 @@ import (
 	"net/http"
 	"path/filepath"
 	"text/template"
+
+	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/config"
 )
 
-func RenderTemplate(w http.ResponseWriter, templateFile string) {
-	templateCache, err := createTemplateCache()
+var appConfig *config.AppConfig
 
-	if err != nil {
-		log.Fatal("Error creating template cache => ", err)
+func NewTemplates(ac *config.AppConfig) {
+	appConfig = ac
+}
+
+func RenderTemplate(w http.ResponseWriter, templateFile string) {
+	var templateCache map[string]*template.Template
+
+	if appConfig.UseCache {
+		templateCache = appConfig.TemplateCache
+	} else {
+		templateCache, _ = CreateTemplateCache()
 	}
 
+	templateCache = appConfig.TemplateCache
 	template, ok := templateCache[templateFile]
 
 	if !ok {
@@ -22,8 +33,7 @@ func RenderTemplate(w http.ResponseWriter, templateFile string) {
 	}
 
 	buffer := new(bytes.Buffer)
-
-	err = template.Execute(buffer, nil)
+	err := template.Execute(buffer, nil)
 
 	if err != nil {
 		log.Fatal("Error executing template => ", err)
@@ -32,11 +42,11 @@ func RenderTemplate(w http.ResponseWriter, templateFile string) {
 	_, err = buffer.WriteTo(w)
 
 	if err != nil {
-		log.Fatal("Error writing template to browser => ", err)
+		log.Println("Error writing template to browser => ", err)
 	}
 }
 
-func createTemplateCache() (map[string]*template.Template, error) {
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	templateCache := map[string]*template.Template{}
 
 	pages, err := filepath.Glob("./templates/*.page.tmpl")
