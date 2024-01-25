@@ -9,6 +9,7 @@ import (
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/config"
 	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/models"
+	"github.com/justinas/nosurf"
 )
 
 var appConfig *config.AppConfig
@@ -17,11 +18,12 @@ func NewTemplates(ac *config.AppConfig) {
 	appConfig = ac
 }
 
-func AddDefaultData(templateData *models.TemplateData) *models.TemplateData {
+func AddDefaultData(templateData *models.TemplateData, r *http.Request) *models.TemplateData {
+	templateData.CSRFToken = nosurf.Token(r)
 	return templateData
 }
 
-func RenderTemplate(w http.ResponseWriter, templateFile string, templateData *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, templateFile string, templateData *models.TemplateData) {
 	var templateCache map[string]*template.Template
 
 	if appConfig.UseCache {
@@ -38,7 +40,7 @@ func RenderTemplate(w http.ResponseWriter, templateFile string, templateData *mo
 	}
 
 	buffer := new(bytes.Buffer)
-	templateData = AddDefaultData(templateData)
+	templateData = AddDefaultData(templateData, r)
 	err := template.Execute(buffer, templateData)
 
 	if err != nil {

@@ -19,8 +19,9 @@ func routes(app *config.AppConfig) http.Handler {
 
 	router.Get("/", handlers.Repo.Home)
 	router.Get("/about", handlers.Repo.About)
-	router.Get("/make-reservation", handlers.Repo.MakeReservation)
-	router.Get("/search-availability", handlers.Repo.SearchAvailability)
+	router.Get("/make-reservation", handlers.Repo.Reservation)
+	router.Get("/search-availability", handlers.Repo.Availability)
+	router.Post("/search-availability", handlers.Repo.PostAvailability)
 	router.Get("/contact", handlers.Repo.Contact)
 	router.Get("/generals-quarters", handlers.Repo.Generals)
 	router.Get("/majors-suite", handlers.Repo.Majors)
