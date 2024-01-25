@@ -14,11 +14,11 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "text/html")
-	render.NewRenderTemplate(w, "home.page.tmpl")
+	render.RenderTemplate(w, "home.page.tmpl")
 }
 
 func About(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "text/html")
-	render.NewRenderTemplate(w, "about.page.tmpl")
+	render.RenderTemplate(w, "about.page.tmpl")
 }
