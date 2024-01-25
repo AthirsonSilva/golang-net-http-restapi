@@ -6,9 +6,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <title>My Nice Page</title>
-
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
         integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <link rel="stylesheet"
@@ -116,7 +115,7 @@
     <script>
         let attention = Prompt();
 
-        (() => {
+        (function () {
             'use strict';
             window.addEventListener('load', function () {
                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -152,7 +151,7 @@
         }
 
         function Prompt() {
-            let toast = (c) => {
+            let toast = function (c) {
                 const {
                     msg = '',
                     icon = 'success',
@@ -177,7 +176,7 @@
                 Toast.fire({})
             }
 
-            let success = (c) => {
+            let success = function (c) {
                 const {
                     msg = "",
                     title = "",
@@ -193,7 +192,7 @@
 
             }
 
-            let error = (c) => {
+            let error = function (c) {
                 const {
                     msg = "",
                     title = "",
@@ -222,15 +221,14 @@
                     focusConfirm: false,
                     showCancelButton: true,
                     willOpen: () => {
-                        const elem = document.getElementById("reservation-dates-modal");
-                        const rp = new DateRangePicker(elem, {
-                            format: 'yyyy-mm-dd',
-                            showOnFocus: true,
-                        })
+                        if (c.willOpen !== undefined) {
+                            c.willOpen();
+                        }
                     },
                     didOpen: () => {
-                        document.getElementById("start").removeAttribute("disabled");
-                        document.getElementById("end").removeAttribute("disabled");
+                        if (c.didOpen !== undefined) {
+                            c.didOpen();
+                        }
                     },
                     preConfirm: () => {
                         return [
@@ -241,7 +239,17 @@
                 })
 
                 if (formValues) {
-                    Swal.fire(JSON.stringify(formValues))
+                    if (formValues.dismiss !== Swal.DismissReason.cancel) {
+                        if (formValues.value !== "") {
+                            if (c.callback !== undefined) {
+                                c.callback(formValues)
+                            }
+                        } else {
+                            c.callback(false)
+                        }
+                    } else {
+                        c.callback(false)
+                    }
                 }
             }
 
@@ -252,6 +260,7 @@
                 custom: custom,
             }
         }
+
     </script>
 
 </body>

@@ -1,6 +1,9 @@
 package handlers
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/config"
@@ -51,7 +54,32 @@ func (repo *Repository) Availability(w http.ResponseWriter, r *http.Request) {
 }
 
 func (repo *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Post to search Availability"))
+	start := r.Form.Get("start")
+	end := r.Form.Get("end")
+
+	w.Write([]byte(fmt.Sprintf(
+		"start date is %s and end date is %s", start, end,
+	)))
+}
+
+type jsonResponse struct {
+	OK      bool   `json:"ok"`
+	Message string `json:"message"`
+}
+
+func (repo *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
+	response := jsonResponse{
+		OK:      true,
+		Message: "Available!",
+	}
+
+	out, err := json.MarshalIndent(response, "", "     ")
+	if err != nil {
+		log.Println(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(out)
 }
 
 func (repo *Repository) Contact(w http.ResponseWriter, r *http.Request) {
