@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/config"
-	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/handlers"
-	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/render"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/handlers"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
 	"github.com/alexedwards/scs/v2"
 )
 

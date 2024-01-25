@@ -6,9 +6,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/config"
-	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/models"
-	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/render"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
 )
 
 var Repo *Repository

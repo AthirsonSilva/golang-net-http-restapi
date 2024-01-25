@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/config"
-	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/handlers"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )

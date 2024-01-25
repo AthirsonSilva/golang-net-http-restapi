@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/config"
-	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/models"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
 	"github.com/justinas/nosurf"
 )
 
