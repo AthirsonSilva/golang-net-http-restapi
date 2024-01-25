@@ -29,6 +29,9 @@ func main() {
 	http.HandleFunc("/", handlers.Repo.Home)
 	http.HandleFunc("/about", handlers.Repo.About)
 
-	log.Printf("Starting the server on port %v\n", port)
-	log.Fatal(http.ListenAndServe(port, nil))
+ 	log.Printf("Starting the server on port %v\n", port)
+
+	if err := http.ListenAndServe(port, nil); err != nil {
+		log.Fatal(err)
+	}
 }

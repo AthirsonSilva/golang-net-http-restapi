@@ -8,6 +8,7 @@ import (
 	"text/template"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/config"
+	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/models"
 )
 
 var appConfig *config.AppConfig
@@ -16,7 +17,11 @@ func NewTemplates(ac *config.AppConfig) {
 	appConfig = ac
 }
 
-func RenderTemplate(w http.ResponseWriter, templateFile string) {
+func AddDefaultData(templateData *models.TemplateData) *models.TemplateData {
+	return templateData
+}
+
+func RenderTemplate(w http.ResponseWriter, templateFile string, templateData *models.TemplateData) {
 	var templateCache map[string]*template.Template
 
 	if appConfig.UseCache {
@@ -33,7 +38,8 @@ func RenderTemplate(w http.ResponseWriter, templateFile string) {
 	}
 
 	buffer := new(bytes.Buffer)
-	err := template.Execute(buffer, nil)
+	templateData = AddDefaultData(templateData)
+	err := template.Execute(buffer, templateData)
 
 	if err != nil {
 		log.Fatal("Error executing template => ", err)

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/config"
+	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/models"
 	"github.com/AthirsonSilva/golang-net-http-restapi/pkg/render"
 )
 
@@ -31,11 +32,17 @@ func (repo *Repository) Home(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "text/html")
-	render.RenderTemplate(w, "home.page.tmpl")
+	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
 func (repo *Repository) About(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "text/html")
-	render.RenderTemplate(w, "about.page.tmpl")
+
+	stringMap := make(map[string]string)
+	stringMap["test"] = "Data injected from the handler"
+
+	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }

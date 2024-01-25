@@ -6,6 +6,7 @@
     <div class="col-md-12">
       <h1>This is the About page</h1>
       <p>my-project is a cool project, but the name ain't it.</p>
+      <p>Data incoming from template: {{index .StringMap "test"}}</p>
       <p>
         <a href="/">Home</a>
       </p>
@@ -16,6 +17,6 @@
 
 {{define "js"}}
 <script>
-  window.alert("This is the alert message")
+  console.log("Some JS")
 </script>
 {{end}}
