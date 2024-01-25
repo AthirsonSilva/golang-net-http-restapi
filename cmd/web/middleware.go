@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -11,20 +10,18 @@ import (
 // WriteToConsole logs the request data to the console
 func WriteToConsole(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		requestData := fmt.Sprintf(
-			`
-			Receiving a request with data...
+		log.Printf("Handler called for URL => %s", r.URL.Path)
+		log.Printf("Handler called for method => %s", r.Method)
+		log.Printf("Handler called for protocol => %s", r.Proto)
+		log.Printf("Handler called for host => %s", r.Host)
+		log.Printf("Handler called for remote address => %s", r.RemoteAddr)
 
-			Request HTTP Method => %s 
-			Request URI => %s 
-			Request Headers => %s
-			`,
-			r.Method,
-			r.RequestURI,
-			r.Header,
-		)
+		for name, values := range r.Header {
+			for _, value := range values {
+				log.Printf("Handler called for header => %s: %s", name, value)
+			}
+		}
 
-		log.Println(requestData)
 		next.ServeHTTP(w, r)
 	})
 }
