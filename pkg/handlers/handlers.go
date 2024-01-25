@@ -25,10 +25,8 @@ func NewHandlers(r *Repository) {
 }
 
 func (repo *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
+	remoteIP := r.RemoteAddr
+	repo.Config.Session.Put(r.Context(), "remote_ip", remoteIP)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "text/html")
@@ -36,11 +34,14 @@ func (repo *Repository) Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (repo *Repository) About(w http.ResponseWriter, r *http.Request) {
+	remoteIP := repo.Config.Session.GetString(r.Context(), "remote_ip")
+
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "text/html")
 
 	stringMap := make(map[string]string)
-	stringMap["test"] = "Data injected from the handler"
+	stringMap["remote_ip"] = remoteIP
+	stringMap["test"] = "Data from the server"
 
 	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
 		StringMap: stringMap,

@@ -8,6 +8,13 @@
       <p>my-project is a cool project, but the name ain't it.</p>
       <p>Data incoming from template: {{index .StringMap "test"}}</p>
       <p>
+        {{if ne (index .StringMap "remote_ip") ""}}
+        Your remote IP address is {{index .StringMap "remote_ip"}}
+        {{else}}
+        I don't know your IP address yet. Visit the <a href="/">Home page</a> so I can set it.
+        {{end}}
+      </p>
+      <p>
         <a href="/">Home</a>
       </p>
     </div>
