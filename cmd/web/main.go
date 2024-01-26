@@ -13,13 +13,15 @@ import (
 
 const port = ":8080"
 
+// Creates instances for both the application's system-wide config and Session manager
 var app config.AppConfig
 var session *scs.SessionManager
 
 func main() {
-	app.UseCache = false
+	app.UseCache = true
 	app.InProduction = false
 
+	// Initialize the session manager
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
 	session.Cookie.Persist = true
@@ -27,12 +29,14 @@ func main() {
 	session.Cookie.Secure = app.InProduction
 	app.Session = session
 
+	// Initialize the template cache
 	templateCache, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache")
 	}
 	app.TemplateCache = templateCache
 
+	// Initialize the handlers
 	repo := handlers.NewRepo(&app)
 	render.NewTemplates(&app)
 	handlers.NewHandlers(repo)

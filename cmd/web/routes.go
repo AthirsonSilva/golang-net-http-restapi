@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
+// Creates a new Chi router and routes all available endpoints
 func routes(app *config.AppConfig) http.Handler {
 	router := chi.NewRouter()
 

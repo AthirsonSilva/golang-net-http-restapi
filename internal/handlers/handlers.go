@@ -14,20 +14,24 @@ import (
 
 var Repo *Repository
 
+// System-wide configuration struct
 type Repository struct {
 	Config *config.AppConfig
 }
 
+// Creates a new Repo (Application Config) instance
 func NewRepo(a *config.AppConfig) *Repository {
 	return &Repository{
 		Config: a,
 	}
 }
 
+// Creates a new Handlers instance
 func NewHandlers(r *Repository) {
 	Repo = r
 }
 
+// Responsible for the Home page
 func (repo *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	remoteIP := r.RemoteAddr
 
@@ -35,6 +39,7 @@ func (repo *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, r, "home.page.tmpl", &models.TemplateData{})
 }
 
+// Responsible for the About page
 func (repo *Repository) About(w http.ResponseWriter, r *http.Request) {
 	remoteIP := repo.Config.Session.GetString(r.Context(), "remote_ip")
 	stringMap := make(map[string]string)
@@ -46,6 +51,7 @@ func (repo *Repository) About(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// Responsible for the Reservation page
 func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 	var emptyReservation models.Reservation
 	data := make(map[string]interface{})
@@ -56,6 +62,7 @@ func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// Responsible for the PostReservation page
 func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -63,6 +70,7 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	// Get the post data from the form
 	reservation := models.Reservation{
 		FirstName: r.Form.Get("first_name"),
 		LastName:  r.Form.Get("last_name"),
@@ -70,6 +78,7 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 		Email:     r.Form.Get("email"),
 	}
 
+	// Apply validation for every form field
 	form := forms.New(r.PostForm)
 	form.Required("first_name", "last_name", "email", "phone")
 	form.IsEmail("email")
@@ -89,10 +98,12 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
+// Responsible for rendering the Availability page
 func (repo *Repository) Availability(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, r, "search-availability.page.tmpl", &models.TemplateData{})
 }
 
+// Responsible for receiving the data from the Availability page
 func (repo *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	start := r.Form.Get("start")
 	end := r.Form.Get("end")
@@ -102,13 +113,9 @@ func (repo *Repository) PostAvailability(w http.ResponseWriter, r *http.Request)
 	)))
 }
 
-type jsonResponse struct {
-	OK      bool   `json:"ok"`
-	Message string `json:"message"`
-}
-
+// Responsible for rendering the Availability JSON page
 func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Request) {
-	response := jsonResponse{
+	response := models.JsonResponse{
 		OK:      true,
 		Message: "Available!",
 	}
@@ -123,13 +130,16 @@ func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Requ
 }
 
 func (repo *Repository) Contact(w http.ResponseWriter, r *http.Request) {
+	// Responsible for rendering the Contact page
 	render.RenderTemplate(w, r, "contact.page.tmpl", &models.TemplateData{})
 }
 
+// Responsible for rendering the Reservation Summary page
 func (repo *Repository) Majors(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, r, "majors.page.tmpl", &models.TemplateData{})
 }
 
+// Responsible for rendering the Reservation Summary page
 func (repo *Repository) Generals(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, r, "generals.page.tmpl", &models.TemplateData{})
 }
