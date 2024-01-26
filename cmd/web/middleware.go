@@ -10,15 +10,17 @@ import (
 // WriteToConsole logs the request data to the console
 func WriteToConsole(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("Handler called for URL => %s", r.URL.Path)
 		log.Printf("Handler called for method => %s", r.Method)
 		log.Printf("Handler called for protocol => %s", r.Proto)
-		log.Printf("Handler called for host => %s", r.Host)
-		log.Printf("Handler called for remote address => %s", r.RemoteAddr)
+		log.Printf("Handler called for URL => %s%s", r.Host, r.URL.Path)
 
-		for name, values := range r.Header {
-			for _, value := range values {
-				log.Printf("Handler called for header => %s: %s", name, value)
+		headers := []string{"Content-Type", "Content-Length", "Accept-Encoding", "Cookie", "Accept", "User-Agent"}
+		for _, h := range headers {
+			headerValue := r.Header.Get(h)
+			if headerValue == "" {
+				log.Printf("Handler called for header => %s: <empty>", h)
+			} else {
+				log.Printf("Handler called for header => %s: %s", h, headerValue)
 			}
 		}
 
