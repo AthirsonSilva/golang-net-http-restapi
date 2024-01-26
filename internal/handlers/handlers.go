@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/forms"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
 )
@@ -46,7 +47,46 @@ func (repo *Repository) About(w http.ResponseWriter, r *http.Request) {
 }
 
 func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{})
+	var emptyReservation models.Reservation
+	data := make(map[string]interface{})
+	data["reservation"] = emptyReservation
+
+	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+	})
+}
+
+func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	reservation := models.Reservation{
+		FirstName: r.Form.Get("first_name"),
+		LastName:  r.Form.Get("last_name"),
+		Phone:     r.Form.Get("phone"),
+		Email:     r.Form.Get("email"),
+	}
+
+	form := forms.New(r.PostForm)
+	form.Required("first_name", "last_name", "email", "phone")
+	form.IsEmail("email")
+	for _, field := range []string{"first_name", "last_name"} {
+		form.MinLength(field, 2, r)
+	}
+
+	form.MinLength("first_name", 4, r)
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+
+		render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+	}
 }
 
 func (repo *Repository) Availability(w http.ResponseWriter, r *http.Request) {
@@ -67,7 +107,7 @@ type jsonResponse struct {
 	Message string `json:"message"`
 }
 
-func (repo *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
+func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 	response := jsonResponse{
 		OK:      true,
 		Message: "Available!",
