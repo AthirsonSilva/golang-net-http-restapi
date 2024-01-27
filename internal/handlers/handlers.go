@@ -86,7 +86,6 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 		form.MinLength(field, 2, r)
 	}
 
-	form.MinLength("first_name", 4, r)
 	if !form.Valid() {
 		data := make(map[string]interface{})
 		data["reservation"] = reservation
@@ -96,6 +95,28 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 			Data: data,
 		})
 	}
+
+	repo.Config.Session.Put(r.Context(), "reservation", reservation)
+	http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)
+}
+
+func (repo *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) {
+	reservation, ok := repo.Config.Session.Get(r.Context(), "reservation").(models.Reservation)
+	if !ok {
+		log.Println("Cannot get reservation from session")
+		repo.Config.Session.Put(r.Context(), "error", "Can't get reservation from session")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+	repo.Config.Session.Remove(r.Context(), "reservation")
+
+	// Render the Reservation Summary page
+	render.RenderTemplate(w, r, "reservation-summary.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 }
 
 // Responsible for rendering the Availability page

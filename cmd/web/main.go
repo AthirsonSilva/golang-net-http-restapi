@@ -1,12 +1,14 @@
 package main
 
 import (
+	"encoding/gob"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/handlers"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
 	"github.com/alexedwards/scs/v2"
 )
@@ -18,7 +20,10 @@ var app config.AppConfig
 var session *scs.SessionManager
 
 func main() {
-	app.UseCache = true
+	// Enable value storing on the Session type
+	gob.Register(models.Reservation{})
+
+	// Change to true when in production
 	app.InProduction = false
 
 	// Initialize the session manager
@@ -34,6 +39,7 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot create template cache")
 	}
+	app.UseCache = false
 	app.TemplateCache = templateCache
 
 	// Initialize the handlers

@@ -22,12 +22,15 @@ func NewTemplates(ac *config.AppConfig) {
 
 // AddDefaultData adds data for all templates
 func AddDefaultData(templateData *models.TemplateData, r *http.Request) *models.TemplateData {
+	templateData.Flash = appConfig.Session.PopString(r.Context(), "flash")
+	templateData.Error = appConfig.Session.PopString(r.Context(), "error")
+	templateData.Warning = appConfig.Session.PopString(r.Context(), "warning")
 	templateData.CSRFToken = nosurf.Token(r)
 	return templateData
 }
 
-// RenderTemplate renders templates using html/template
-func RenderTemplate(w http.ResponseWriter, r *http.Request, templateFile string, templateData *models.TemplateData) {
+// RenderTemplate renders templates using html/template with caching
+func RenderTemplate(w http.ResponseWriter, r *http.Request, templateFile string, templateData *models.TemplateData) error {
 	var templateCache map[string]*template.Template
 
 	// Check if the cache is being used
@@ -47,17 +50,14 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, templateFile string,
 
 	buffer := new(bytes.Buffer)
 	templateData = AddDefaultData(templateData, r)
-	err := template.Execute(buffer, templateData)
-
-	if err != nil {
-		log.Fatal("Error executing template => ", err)
-	}
-
-	_, err = buffer.WriteTo(w)
+	_ = template.Execute(buffer, templateData)
+	_, err := buffer.WriteTo(w)
 
 	if err != nil {
 		log.Println("Error writing template to browser => ", err)
 	}
+
+	return nil
 }
 
 // CreateTemplateCache creates a template cache as a map
