@@ -16,6 +16,7 @@ import (
 // Creates empty variable for the System-wide configuration typ
 var appConfig *config.AppConfig
 var pathToTemplates = "./templates"
+var functions = template.FuncMap{}
 
 // Creates a new instance of the Templates function
 func NewTemplates(ac *config.AppConfig) {
@@ -75,7 +76,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 	// Loop through all files ending with page.tmpl
 	for _, page := range pages {
 		name := filepath.Base(page)
-		templateSet, err := template.New(name).ParseFiles(page)
+		templateSet, err := template.New(name).Funcs(functions).ParseFiles(page)
 
 		if err != nil {
 			return templateCache, err
