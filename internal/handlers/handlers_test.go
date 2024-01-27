@@ -41,6 +41,7 @@ var testList = []testStructure{
 		{key: "email", value: "jsmith@gmail.com"},
 		{key: "phone", value: "11 99 5555555"},
 	}, http.StatusOK},
+	{"Reservation Summary", "/reservation-summary", "GET", []requestData{}, http.StatusOK},
 }
 
 func TestHandlers(t *testing.T) {
