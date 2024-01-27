@@ -24,39 +24,40 @@ func New(data url.Values) *Form {
 }
 
 // Checks if the Form type has a value for the given field
-func (f *Form) HasField(field string, r *http.Request) bool {
-	fieldValue := r.Form.Get(field)
-	return fieldValue != ""
+func (form *Form) HasField(field string) bool {
+	hasField := form.Data.Get(field)
+	return hasField != ""
 }
 
 // Checks if the form is valid
-func (f *Form) Valid() bool {
-	return len(f.Errors) == 0
+func (form *Form) Valid() bool {
+	return len(form.Errors) == 0
 }
 
 // Verifies all the required fields
-func (f *Form) Required(fields ...string) {
+func (form *Form) Required(fields ...string) {
 	for _, field := range fields {
-		value := f.Data.Get(field)
+		value := form.Data.Get(field)
 		if strings.TrimSpace(value) == "" {
-			f.Errors.Add(field, "This field cannot be blank")
+			form.Errors.Add(field, "This field cannot be blank")
 		}
 	}
 }
 
 // Checks if the given field from the request has the passed minimum lenght
-func (f *Form) MinLength(field string, length int, r *http.Request) bool {
-	fieldValue := r.Form.Get(field)
+func (form *Form) MinLength(field string, length int, request *http.Request) bool {
+	fieldValue := request.Form.Get(field)
 	if len(fieldValue) < length {
-		f.Errors.Add(field, fmt.Sprintf("This field must be at least %d characters long", length))
+		form.Errors.Add(field, fmt.Sprintf("This field must be at least %d characters long", length))
 		return false
 	}
 	return true
 }
 
 // Validates if the given email is a valid one
-func (f *Form) IsEmail(field string) {
-	if !govalidator.IsEmail(f.Data.Get(field)) {
-		f.Errors.Add(field, "Invalid email address")
+func (form *Form) IsEmail(field string) {
+	email := form.Data.Get(field)
+	if !govalidator.IsEmail(email) {
+		form.Errors.Add(field, "Invalid email address")
 	}
 }
