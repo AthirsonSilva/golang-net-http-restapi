@@ -2,6 +2,7 @@ package render
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -14,6 +15,7 @@ import (
 
 // Creates empty variable for the System-wide configuration typ
 var appConfig *config.AppConfig
+var pathToTemplates = "./templates"
 
 // Creates a new instance of the Templates function
 func NewTemplates(ac *config.AppConfig) {
@@ -64,7 +66,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, templateFile string,
 func CreateTemplateCache() (map[string]*template.Template, error) {
 	templateCache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./templates/*.page.tmpl")
+	pages, err := filepath.Glob(fmt.Sprintf("%s/*.page.tmpl", pathToTemplates))
 
 	if err != nil {
 		return templateCache, err
@@ -80,7 +82,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 		}
 
 		// Look for any layout files
-		layoutMatches, err := filepath.Glob("./templates/*.layout.tmpl")
+		layoutMatches, err := filepath.Glob(fmt.Sprintf("%s/*.layout.tmpl", pathToTemplates))
 
 		if err != nil {
 			return templateCache, err
@@ -88,8 +90,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 
 		// If there are any layout files
 		if len(layoutMatches) > 0 {
-			templateSet, err = templateSet.ParseGlob("./templates/*.layout.tmpl")
-
+			templateSet, err = templateSet.ParseGlob(fmt.Sprintf("%s/*.layout.tmpl", pathToTemplates))
 			if err != nil {
 				return templateCache, err
 			}
