@@ -4,10 +4,12 @@ import (
 	"encoding/gob"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/handlers"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/helpers"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
 	"github.com/alexedwards/scs/v2"
@@ -44,6 +46,10 @@ func setupComponents() error {
 	// Change to true when in production
 	app.InProduction = false
 
+	// Initialize loggers
+	app.InfoLog = log.New(os.Stdout, "INFO => ", log.Ldate|log.Ltime)
+	app.ErrorLog = log.New(os.Stdout, "ERROR => ", log.Ldate|log.Ltime|log.Lshortfile)
+
 	// Initialize the session manager
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -65,6 +71,7 @@ func setupComponents() error {
 	// Initialize the handlers
 	repo := handlers.NewRepo(&app)
 	render.NewTemplates(&app)
+	helpers.NewHelpers(&app)
 	handlers.NewHandlers(repo)
 
 	return nil

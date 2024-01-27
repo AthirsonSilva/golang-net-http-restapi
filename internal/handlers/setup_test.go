@@ -65,7 +65,7 @@ func getTestRoutes() http.Handler {
 	router.Get("/majors-suite", Repo.Majors)
 
 	router.Get("/reservation-summary", Repo.ReservationSummary)
-	router.Get("/make-reservation", Repo.Reservation)
+	router.Get("/make-reservation", Repo.MakeReservation)
 	router.Post("/make-reservation", Repo.PostReservation)
 
 	router.Get("/search-availability", Repo.Availability)
