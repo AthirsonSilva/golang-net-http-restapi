@@ -15,20 +15,20 @@ import (
 )
 
 // Creates empty variable for the System-wide configuration typ
-var appConfig *config.AppConfig
+var TestAppConfig *config.AppConfig
 var pathToTemplates = "./templates"
 var functions = template.FuncMap{}
 
 // Creates a new instance of the Templates function
 func NewTemplates(ac *config.AppConfig) {
-	appConfig = ac
+	TestAppConfig = ac
 }
 
 // AddDefaultData adds data for all templates
 func AddDefaultData(templateData *models.TemplateData, r *http.Request) *models.TemplateData {
-	templateData.Flash = appConfig.Session.PopString(r.Context(), "flash")
-	templateData.Error = appConfig.Session.PopString(r.Context(), "error")
-	templateData.Warning = appConfig.Session.PopString(r.Context(), "warning")
+	templateData.Flash = TestAppConfig.Session.PopString(r.Context(), "flash")
+	templateData.Error = TestAppConfig.Session.PopString(r.Context(), "error")
+	templateData.Warning = TestAppConfig.Session.PopString(r.Context(), "warning")
 	templateData.CSRFToken = nosurf.Token(r)
 	return templateData
 }
@@ -38,8 +38,8 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, templateFile string,
 	var templateCache map[string]*template.Template
 
 	// Check if the cache is being used
-	if appConfig.UseCache {
-		templateCache = appConfig.TemplateCache
+	if TestAppConfig.UseCache {
+		templateCache = TestAppConfig.TemplateCache
 	} else {
 		templateCache, _ = CreateTemplateCache()
 	}

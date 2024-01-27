@@ -1,7 +1,9 @@
 package render
 
 import (
+	"log"
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
@@ -31,7 +33,10 @@ func TestRenderTemplate(t *testing.T) {
 		t.Error(err)
 	}
 
-	appConfig.TemplateCache = templateCache
+	// Initialize loggers
+	TestAppConfig.InfoLog = log.New(os.Stdout, "INFO => ", log.Ldate|log.Ltime)
+	TestAppConfig.ErrorLog = log.New(os.Stdout, "ERROR => ", log.Ldate|log.Ltime|log.Lshortfile)
+	TestAppConfig.TemplateCache = templateCache
 
 	testRequest, err := getSession()
 	if err != nil {
@@ -67,7 +72,7 @@ func getSession() (*http.Request, error) {
 }
 
 func TestNewTemplate(t *testing.T) {
-	NewTemplates(appConfig)
+	NewTemplates(TestAppConfig)
 }
 
 func TestCreateTemplateCache(t *testing.T) {

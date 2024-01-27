@@ -31,7 +31,7 @@ func TestMain(m *testing.M) {
 	testAppConfig.Session = testSession
 
 	// Set the app config to the test config
-	appConfig = &testAppConfig
+	TestAppConfig = &testAppConfig
 
 	os.Exit(m.Run())
 }
