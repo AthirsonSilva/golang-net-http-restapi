@@ -20,48 +20,12 @@ type testStructure struct {
 }
 
 var testList = []testStructure{
-	{
-		"Index",
-		"/",
-		"GET",
-		[]paramsData{},
-		http.StatusOK,
-	},
-	{
-		"About",
-		"/about",
-		"GET",
-		[]paramsData{},
-		http.StatusOK,
-	},
-	{
-		"Contact",
-		"/contact",
-		"GET",
-		[]paramsData{},
-		http.StatusOK,
-	},
-	{
-		"General Quartes",
-		"/generals-quarters",
-		"GET",
-		[]paramsData{},
-		http.StatusOK,
-	},
-	{
-		"Major Suites",
-		"/majors-suite",
-		"GET",
-		[]paramsData{},
-		http.StatusOK,
-	},
-	{
-		"Search Availability",
-		"/search-availability",
-		"GET",
-		[]paramsData{},
-		http.StatusOK,
-	},
+	{"Index", "/", "GET", []paramsData{}, http.StatusOK},
+	{"About", "/about", "GET", []paramsData{}, http.StatusOK},
+	{"Contact", "/contact", "GET", []paramsData{}, http.StatusOK},
+	{"General Quartes", "/generals-quarters", "GET", []paramsData{}, http.StatusOK},
+	{"Major Suites", "/majors-suite", "GET", []paramsData{}, http.StatusOK},
+	{"Search Availability", "/search-availability", "GET", []paramsData{}, http.StatusOK},
 }
 
 func TestHandlers(t *testing.T) {
@@ -82,5 +46,5 @@ func TestHandlers(t *testing.T) {
 					test.expectedCode, response.StatusCode, test.name)
 			}
 		}
-	}
+	}	
 }
