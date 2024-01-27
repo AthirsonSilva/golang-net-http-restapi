@@ -17,8 +17,27 @@ Disclaimer: you will need to have these tools installed on your machine to run t
 
 ## Run the application
 
-Simply navigate to the repositort directory and run this command:
+Clone the repository:
 
-```golang
-go run ./cmd/web
+```bash
+git clone https://github.com/AthirsonSilva/golang-net-http-webapp
+```
+
+Navigate to the application root directory:
+
+```bash
+cd golang-net-http-webapp
+```
+
+Run the application on Linux or MacOS:
+
+```bash
+chmod +x ./run.sh
+./run.sh
+```
+
+Run the application on Windows:
+
+```bat
+./run.bat
 ```
