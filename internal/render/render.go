@@ -2,6 +2,7 @@ package render
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -43,12 +44,12 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, templateFile string,
 		templateCache, _ = CreateTemplateCache()
 	}
 
-	// Get the template set
-	templateCache = appConfig.TemplateCache
 	template, ok := templateCache[templateFile]
 
 	if !ok {
-		log.Fatal("Template not found => ", templateFile)
+		errorMsg := fmt.Sprintf("The template %s does not exist", templateFile)
+		log.Println(errorMsg)
+		return errors.New(errorMsg)
 	}
 
 	buffer := new(bytes.Buffer)
@@ -58,6 +59,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, templateFile string,
 
 	if err != nil {
 		log.Println("Error writing template to browser => ", err)
+		return err
 	}
 
 	return nil
