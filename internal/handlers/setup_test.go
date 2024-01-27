@@ -55,7 +55,6 @@ func getTestRoutes() http.Handler {
 	router := chi.NewRouter()
 
 	router.Use(middleware.Recoverer)
-	router.Use(NoSurf)
 	router.Use(SessionLoad)
 	router.Use(WriteToConsole)
 
