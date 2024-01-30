@@ -48,7 +48,7 @@ func (repo *Repository) About(responseWriter http.ResponseWriter, request *http.
 
 // Responsible for the MakeReservation page
 func (repo *Repository) MakeReservation(responseWriter http.ResponseWriter, request *http.Request) {
-	var emptyReservation models.Reservation
+	var emptyReservation models.ReservationForm
 	data := make(map[string]interface{})
 	data["reservation"] = emptyReservation
 
@@ -67,7 +67,7 @@ func (repo *Repository) PostReservation(responseWriter http.ResponseWriter, requ
 	}
 
 	// Get the post data from the form
-	reservation := models.Reservation{
+	reservation := models.ReservationForm{
 		FirstName: request.Form.Get("first_name"),
 		LastName:  request.Form.Get("last_name"),
 		Phone:     request.Form.Get("phone"),
@@ -97,7 +97,7 @@ func (repo *Repository) PostReservation(responseWriter http.ResponseWriter, requ
 }
 
 func (repo *Repository) ReservationSummary(responseWriter http.ResponseWriter, request *http.Request) {
-	reservation, ok := repo.Config.Session.Get(request.Context(), "reservation").(models.Reservation)
+	reservation, ok := repo.Config.Session.Get(request.Context(), "reservation").(models.ReservationForm)
 	if !ok {
 		err := errors.New("cannot get reservation from session")
 		helpers.ServerError(responseWriter, err)

@@ -44,7 +44,12 @@ func main() {
 
 func setupComponents() (*database.Database, error) {
 	// Enable value storing on the Session type
+	gob.Register(models.ReservationForm{})
+	gob.Register(models.User{})
 	gob.Register(models.Reservation{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
+	gob.Register(models.RoomRestriction{})
 
 	// Change to true when in production
 	app.InProduction = false
@@ -91,7 +96,7 @@ func setupComponents() (*database.Database, error) {
 
 	// Initialize the handlers
 	repo := handlers.NewRepo(&app, db)
-	render.NewTemplates(&app)
+	render.NewRenderer(&app)
 	helpers.NewHelpers(&app)
 	handlers.NewHandlers(repo)
 

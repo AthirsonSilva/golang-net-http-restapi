@@ -72,7 +72,7 @@ func getSession() (*http.Request, error) {
 }
 
 func TestNewTemplate(t *testing.T) {
-	NewTemplates(TestAppConfig)
+	NewRenderer(TestAppConfig)
 }
 
 func TestCreateTemplateCache(t *testing.T) {

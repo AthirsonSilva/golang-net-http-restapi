@@ -17,7 +17,7 @@ var testAppConfig config.AppConfig
 
 func TestMain(m *testing.M) {
 	// Enable value storing on the Session type
-	gob.Register(models.Reservation{})
+	gob.Register(models.ReservationForm{})
 
 	// Change to true when in production
 	testAppConfig.InProduction = false

@@ -20,7 +20,7 @@ var pathToTemplates = "./templates"
 var functions = template.FuncMap{}
 
 // Creates a new instance of the Templates function
-func NewTemplates(ac *config.AppConfig) {
+func NewRenderer(ac *config.AppConfig) {
 	TestAppConfig = ac
 }
 
