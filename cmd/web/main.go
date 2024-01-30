@@ -2,12 +2,14 @@ package main
 
 import (
 	"encoding/gob"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/database"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/handlers"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/helpers"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
@@ -22,11 +24,12 @@ var app config.AppConfig
 var session *scs.SessionManager
 
 func main() {
-	err := setupComponents()
+	db, err := setupComponents()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	defer db.SQL.Close()
 	log.Printf("Starting the server on port %v...\n", port)
 
 	server := &http.Server{
@@ -39,7 +42,7 @@ func main() {
 	}
 }
 
-func setupComponents() error {
+func setupComponents() (*database.Database, error) {
 	// Enable value storing on the Session type
 	gob.Register(models.Reservation{})
 
@@ -58,21 +61,39 @@ func setupComponents() error {
 	session.Cookie.Secure = app.InProduction
 	app.Session = session
 
+	// connecting to database
+	log.Println("Connecting to database...")
+	db, err := database.ConnectSQL(fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s",
+		"localhost",
+		"5432",
+		"postgres",
+		"root",
+		"bookings",
+	))
+
+	if err != nil {
+		log.Fatal("cannot connect to database")
+		return nil, err
+	}
+
+	log.Println("Connected to database!")
+
 	// Initialize the template cache
 	templateCache, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache")
-		return err
+		return nil, err
 	}
 
 	app.UseCache = false
 	app.TemplateCache = templateCache
 
 	// Initialize the handlers
-	repo := handlers.NewRepo(&app)
+	repo := handlers.NewRepo(&app, db)
 	render.NewTemplates(&app)
 	helpers.NewHelpers(&app)
 	handlers.NewHandlers(repo)
 
-	return nil
+	return db, nil
 }

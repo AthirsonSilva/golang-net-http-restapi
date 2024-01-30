@@ -7,23 +7,27 @@ import (
 	"net/http"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/database"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/forms"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/helpers"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/repository"
 )
 
 var Repo *Repository
 
 // System-wide configuration struct
 type Repository struct {
-	Config *config.AppConfig
+	Config   *config.AppConfig
+	Database repository.DatabaseRepository
 }
 
 // Creates a new Repo (Application Config) instance
-func NewRepo(a *config.AppConfig) *Repository {
+func NewRepo(ac *config.AppConfig, db *database.Database) *Repository {
 	return &Repository{
-		Config: a,
+		Config:   ac,
+		Database: repository.NewPostgresRepository(ac, db),
 	}
 }
 
