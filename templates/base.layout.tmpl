@@ -41,38 +41,42 @@
 
 <body class="d-flex flex-column min-vh-100">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/about">About</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Rooms
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="/generals-quarters">General's Quarters</a>
-                        <a class="dropdown-item" href="/majors-suite">Major's Suite</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/search-availability">Book Now</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/contact">Contact</a>
-                </li>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark row">
+        <div class="col-sm-8">
+            <a class="navbar-brand" href="#">Bookings.go</a>
+        </div>
+        <div class="col-sm-5">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Rooms
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="/generals-quarters">General's Quarters</a>
+                            <a class="dropdown-item" href="/majors-suite">Major's Suite</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search-availability">Book Now</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Contact</a>
+                    </li>
 
-            </ul>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -147,16 +151,16 @@
         }
 
         {{with .Error}}
-            notify("{{.}}", "error");
-        {{end}}
+        notify("{{.}}", "error");
+        {{ end }}
 
-        {{with .Flash}}
+        {{ with .Flash}}
         notify("{{.}}", "success");
-        {{end}}
+        {{ end }}
 
-        {{with .Warning}}
+        {{ with .Warning}}
         notify("{{.}}", "warning");
-        {{end}}
+        {{ end }}
 
 
         function Prompt() {
