@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/database"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
@@ -10,6 +12,8 @@ type DatabaseRepository interface {
 	FindAllUsers() bool
 	InsertReservation(reservation models.Reservation) (int, error)
 	InsertRoomRestriction(roomRestriction models.RoomRestriction) error
+	SearchAvailabilityByDateAndRoom(start time.Time, end time.Time, roomID int) (bool, error)
+	SearchAvailabilityByDate(start time.Time, end time.Time, roomID int) ([]models.Room, error)
 }
 
 func (r *postgresRepository) FindAllUsers() bool {
