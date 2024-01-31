@@ -96,7 +96,7 @@ func (r *postgresRepository) SearchAvailabilityByDateAndRoom(start time.Time, en
 	return false, nil
 }
 
-func (r *postgresRepository) SearchAvailabilityByDate(start time.Time, end time.Time, roomID int) ([]models.Room, error) {
+func (r *postgresRepository) SearchAvailabilityByDateForAllRooms(start time.Time, end time.Time) ([]models.Room, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	query := `
@@ -106,13 +106,12 @@ func (r *postgresRepository) SearchAvailabilityByDate(start time.Time, end time.
 							SELECT rr.room_id
 							FROM room_restrictions rr
 							WHERE $1 < rr.end_date
-								AND $2 > rr.start_date
-								AND rr.room_id = $3
+							AND $2 > rr.start_date
 						)
 					`
 
 	var rooms []models.Room
-	rows, err := r.DB.SQL.QueryContext(ctx, query, start, end, roomID)
+	rows, err := r.DB.SQL.QueryContext(ctx, query, start, end)
 	if err != nil {
 		return nil, err
 	}

@@ -13,7 +13,7 @@ type DatabaseRepository interface {
 	InsertReservation(reservation models.Reservation) (int, error)
 	InsertRoomRestriction(roomRestriction models.RoomRestriction) error
 	SearchAvailabilityByDateAndRoom(start time.Time, end time.Time, roomID int) (bool, error)
-	SearchAvailabilityByDate(start time.Time, end time.Time, roomID int) ([]models.Room, error)
+	SearchAvailabilityByDateForAllRooms(start time.Time, end time.Time) ([]models.Room, error)
 }
 
 func (r *postgresRepository) FindAllUsers() bool {
