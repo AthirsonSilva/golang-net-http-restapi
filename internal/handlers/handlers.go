@@ -98,8 +98,9 @@ func (repo *Repository) PostReservation(responseWriter http.ResponseWriter, requ
 
 	roomID, err := strconv.Atoi(request.Form.Get("room_id"))
 	if err != nil {
-		helpers.ServerError(responseWriter, err)
-		return
+		// helpers.ServerError(responseWriter, err)
+		// return
+		roomID = 1
 	}
 
 	reservation := models.Reservation{
@@ -112,7 +113,24 @@ func (repo *Repository) PostReservation(responseWriter http.ResponseWriter, requ
 		EndDate:   parsed_end_date,
 	}
 
-	err = Repo.Database.InsertReservation(reservation)
+	var repositoryId int
+	repositoryId, err = Repo.Database.InsertReservation(reservation)
+	if err != nil {
+		helpers.ServerError(responseWriter, err)
+		return
+	}
+
+	restriction := models.RoomRestriction{
+		StartDate:     parsed_start_date,
+		EndDate:       parsed_end_date,
+		RoomID:        roomID,
+		ReservationID: repositoryId,
+		RestrictionID: 1,
+		CreatedAt:     time.Now(),
+		UpdatedAt:     time.Now(),
+	}
+
+	err = Repo.Database.InsertRoomRestriction(restriction)
 	if err != nil {
 		helpers.ServerError(responseWriter, err)
 		return
