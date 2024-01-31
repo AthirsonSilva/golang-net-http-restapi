@@ -44,7 +44,6 @@ func main() {
 
 func setupComponents() (*database.Database, error) {
 	// Enable value storing on the Session type
-	gob.Register(models.ReservationForm{})
 	gob.Register(models.User{})
 	gob.Register(models.Reservation{})
 	gob.Register(models.Room{})

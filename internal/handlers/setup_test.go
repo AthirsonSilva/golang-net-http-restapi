@@ -25,7 +25,11 @@ var functions = template.FuncMap{}
 
 // Repo the repository used by the handlers
 func getTestRoutes() http.Handler {
-	gob.Register(models.ReservationForm{})
+	gob.Register(models.User{})
+	gob.Register(models.Reservation{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
+	gob.Register(models.RoomRestriction{})
 
 	// Change to true when in production
 	app.InProduction = false
@@ -48,7 +52,7 @@ func getTestRoutes() http.Handler {
 	app.TemplateCache = templateCache
 
 	// Initialize the handlers
-	repo := NewRepo(&app)
+	repo := NewRepo(&app, nil)
 	render.NewRenderer(&app)
 	NewHandlers(repo)
 

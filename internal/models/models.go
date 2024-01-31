@@ -2,18 +2,12 @@ package models
 
 import "time"
 
-type ReservationForm struct {
-	FirstName string
-	LastName  string
-	Email     string
-	Phone     string
-}
-
 type User struct {
 	ID        int
 	FirstName string
 	LastName  string
 	Email     string
+	Phone     string
 	Password  string
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -34,9 +28,14 @@ type Restriction struct {
 }
 
 type Reservation struct {
-	ID        int
-	UserID    int
-	RoomID    int
+	ID     int
+	RoomID int
+
+	FirstName string
+	LastName  string
+	Email     string
+	Phone     string
+
 	StartDate time.Time
 	EndDate   time.Time
 	CreatedAt time.Time

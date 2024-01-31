@@ -3,10 +3,13 @@ package repository
 import (
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/database"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
 )
 
 type DatabaseRepository interface {
-	FindAll() bool
+	FindAllUsers() bool
+
+	InsertReservation(reservation models.Reservation) error
 }
 
 type postgresRepository struct {

@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/database"
@@ -48,7 +50,7 @@ func (repo *Repository) About(responseWriter http.ResponseWriter, request *http.
 
 // Responsible for the MakeReservation page
 func (repo *Repository) MakeReservation(responseWriter http.ResponseWriter, request *http.Request) {
-	var emptyReservation models.ReservationForm
+	var emptyReservation models.Reservation
 	data := make(map[string]interface{})
 	data["reservation"] = emptyReservation
 
@@ -66,20 +68,54 @@ func (repo *Repository) PostReservation(responseWriter http.ResponseWriter, requ
 		return
 	}
 
-	// Get the post data from the form
-	reservation := models.ReservationForm{
-		FirstName: request.Form.Get("first_name"),
-		LastName:  request.Form.Get("last_name"),
-		Phone:     request.Form.Get("phone"),
-		Email:     request.Form.Get("email"),
+	raw_start_date := request.Form.Get("start_date")
+	raw_end_date := request.Form.Get("end_date")
+
+	layout := "2006-01-02"
+	parsed_start_date, err := time.Parse(layout, raw_start_date)
+	if err != nil {
+		helpers.ServerError(responseWriter, err)
+		return
 	}
 
-	// Apply validation for every form field
+	parsed_end_date, err := time.Parse(layout, raw_end_date)
+	if err != nil {
+		helpers.ServerError(responseWriter, err)
+		return
+	}
+
 	form := forms.New(request.PostForm)
-	form.Required("first_name", "last_name", "email", "phone")
+	form.Required("first_name", "last_name", "email", "phone", "start_date", "end_date")
 	form.IsEmail("email")
 	for _, field := range []string{"first_name", "last_name"} {
 		form.MinLength(field, 2, request)
+	}
+
+	if err != nil {
+		helpers.ServerError(responseWriter, err)
+		return
+	}
+
+	roomID, err := strconv.Atoi(request.Form.Get("room_id"))
+	if err != nil {
+		helpers.ServerError(responseWriter, err)
+		return
+	}
+
+	reservation := models.Reservation{
+		FirstName: request.Form.Get("first_name"),
+		LastName:  request.Form.Get("last_name"),
+		Email:     request.Form.Get("email"),
+		Phone:     request.Form.Get("phone"),
+		RoomID:    roomID,
+		StartDate: parsed_start_date,
+		EndDate:   parsed_end_date,
+	}
+
+	err = Repo.Database.InsertReservation(reservation)
+	if err != nil {
+		helpers.ServerError(responseWriter, err)
+		return
 	}
 
 	if !form.Valid() {
@@ -97,7 +133,7 @@ func (repo *Repository) PostReservation(responseWriter http.ResponseWriter, requ
 }
 
 func (repo *Repository) ReservationSummary(responseWriter http.ResponseWriter, request *http.Request) {
-	reservation, ok := repo.Config.Session.Get(request.Context(), "reservation").(models.ReservationForm)
+	reservation, ok := repo.Config.Session.Get(request.Context(), "reservation").(models.Reservation)
 	if !ok {
 		err := errors.New("cannot get reservation from session")
 		helpers.ServerError(responseWriter, err)
