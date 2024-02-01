@@ -6,8 +6,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>My Nice Page</title>
-    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+    <title>Bookings.go</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
         integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <link rel="stylesheet"
@@ -161,17 +161,17 @@
             })
         }
 
-        { { with .Error} }
+        {{ with .Error}}
         notify("{{.}}", "error");
-        { { end } }
+        {{ end }}
 
-        { { with .Flash} }
+        {{ with .Flash}}
         notify("{{.}}", "success");
-        { { end } }
+        {{ end }}
 
-        { { with .Warning} }
+        {{ with .Warning}}
         notify("{{.}}", "warning");
-        { { end } }
+        {{ end }}
 
 
         function Prompt() {
