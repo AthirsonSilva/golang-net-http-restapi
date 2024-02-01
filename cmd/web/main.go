@@ -10,10 +10,10 @@ import (
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/database"
-	"github.com/AthirsonSilva/golang-net-http-restapi/internal/handlers"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/helpers"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/usecases"
 	"github.com/alexedwards/scs/v2"
 )
 
@@ -94,10 +94,10 @@ func setupComponents() (*database.Database, error) {
 	app.TemplateCache = templateCache
 
 	// Initialize the handlers
-	repo := handlers.NewRepo(&app, db)
+	repo := usecases.NewRepo(&app, db)
 	render.NewRenderer(&app)
 	helpers.NewHelpers(&app)
-	handlers.NewHandlers(repo)
+	usecases.NewHandlers(repo)
 
 	return db, nil
 }

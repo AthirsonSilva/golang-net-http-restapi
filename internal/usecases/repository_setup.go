@@ -1,4 +1,4 @@
-package handlers
+package usecases
 
 import (
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"

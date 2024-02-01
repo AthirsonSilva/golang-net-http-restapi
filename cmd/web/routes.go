@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
-	"github.com/AthirsonSilva/golang-net-http-restapi/internal/handlers"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/usecases"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -18,20 +18,20 @@ func routes(app *config.AppConfig) http.Handler {
 	router.Use(SessionLoad)
 	router.Use(WriteToConsole)
 
-	router.Get("/", handlers.Repo.Home)
-	router.Get("/about", handlers.Repo.About)
-	router.Get("/contact", handlers.Repo.Contact)
-	router.Get("/generals-quarters", handlers.Repo.Generals)
-	router.Get("/majors-suite", handlers.Repo.Majors)
+	router.Get("/", usecases.Repo.Home)
+	router.Get("/about", usecases.Repo.About)
+	router.Get("/contact", usecases.Repo.Contact)
+	router.Get("/generals-quarters", usecases.Repo.Generals)
+	router.Get("/majors-suite", usecases.Repo.Majors)
 
-	router.Get("/reservation-summary", handlers.Repo.ReservationSummary)
-	router.Get("/make-reservation", handlers.Repo.MakeReservation)
-	router.Post("/make-reservation", handlers.Repo.PostReservation)
+	router.Get("/reservation-summary", usecases.Repo.ReservationSummary)
+	router.Get("/make-reservation", usecases.Repo.MakeReservation)
+	router.Post("/make-reservation", usecases.Repo.PostReservation)
 
-	router.Get("/search-availability", handlers.Repo.Availability)
-	router.Post("/search-availability-json", handlers.Repo.PostAvailabilityJSON)
-	router.Post("/search-availability", handlers.Repo.PostAvailability)
-	router.Get("/choose-room/{id}", handlers.Repo.ChooseRoom)
+	router.Get("/search-availability", usecases.Repo.Availability)
+	router.Post("/search-availability-json", usecases.Repo.PostAvailabilityJSON)
+	router.Post("/search-availability", usecases.Repo.PostAvailability)
+	router.Get("/choose-room/{id}", usecases.Repo.ChooseRoom)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	router.Handle("/static/*", http.StripPrefix("/static", fileServer))
