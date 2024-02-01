@@ -51,13 +51,31 @@ func (repo *Repository) About(responseWriter http.ResponseWriter, request *http.
 
 // Responsible for the MakeReservation page
 func (repo *Repository) MakeReservation(responseWriter http.ResponseWriter, request *http.Request) {
-	var emptyReservation models.Reservation
+	res, ok := repo.Config.Session.Get(request.Context(), "reservation").(models.Reservation)
+	if !ok {
+		helpers.ServerError(responseWriter, errors.New("cannot get reservation from session"))
+		return
+	}
+
+	room, err := repo.Database.GetRoomByID(res.RoomID)
+	if err != nil {
+		helpers.ServerError(responseWriter, err)
+		return
+	}
+
+	res.Room.RoomName = room.RoomName
+
 	data := make(map[string]interface{})
-	data["reservation"] = emptyReservation
+	data["reservation"] = res
+
+	dateMap := make(map[string]string)
+	dateMap["start_date"] = res.StartDate.Format("2006-01-02")
+	dateMap["end_date"] = res.EndDate.Format("2006-01-02")
 
 	render.RenderTemplate(responseWriter, request, "make-reservation.page.tmpl", &models.TemplateData{
-		Form: forms.New(nil),
-		Data: data,
+		Form:    forms.New(nil),
+		Data:    data,
+		DateMap: dateMap,
 	})
 }
 
@@ -99,9 +117,8 @@ func (repo *Repository) PostReservation(responseWriter http.ResponseWriter, requ
 
 	roomID, err := strconv.Atoi(request.Form.Get("room_id"))
 	if err != nil {
-		// helpers.ServerError(responseWriter, err)
-		// return
-		roomID = 1
+		helpers.ServerError(responseWriter, err)
+		return
 	}
 
 	reservation := models.Reservation{
@@ -154,10 +171,7 @@ func (repo *Repository) PostReservation(responseWriter http.ResponseWriter, requ
 func (repo *Repository) ReservationSummary(responseWriter http.ResponseWriter, request *http.Request) {
 	reservation, ok := repo.Config.Session.Get(request.Context(), "reservation").(models.Reservation)
 	if !ok {
-		err := errors.New("cannot get reservation from session")
-		helpers.ServerError(responseWriter, err)
-		repo.Config.Session.Put(request.Context(), "error", "Can't get reservation from session")
-		http.Redirect(responseWriter, request, "/", http.StatusTemporaryRedirect)
+		helpers.ServerError(responseWriter, errors.New("cannot get reservation"))
 		return
 	}
 
@@ -273,7 +287,6 @@ func (repo *Repository) ChooseRoom(responseWriter http.ResponseWriter, request *
 	}
 
 	res.RoomID = roomID
-
 	repo.Config.Session.Put(request.Context(), "reservation", res)
 
 	http.Redirect(responseWriter, request, "/make-reservation", http.StatusSeeOther)

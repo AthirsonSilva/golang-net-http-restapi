@@ -14,7 +14,7 @@ func WriteToConsole(next http.Handler) http.Handler {
 		log.Printf("Handler called for protocol => %s", r.Proto)
 		log.Printf("Handler called for URL => %s%s", r.Host, r.URL.Path)
 
-		headers := []string{"Content-Type", "Content-Length", "Accept-Encoding", "Cookie", "Accept", "User-Agent"}
+		headers := []string{"Content-Type", "Cookie", "Accept", "User-Agent"}
 		for _, h := range headers {
 			headerValue := r.Header.Get(h)
 			if headerValue == "" {
