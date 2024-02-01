@@ -15,6 +15,7 @@ import (
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/repository"
+	"github.com/go-chi/chi/v5"
 )
 
 var Repo *Repository
@@ -255,4 +256,25 @@ func (repo *Repository) Majors(responseWriter http.ResponseWriter, request *http
 // Responsible for rendering the Reservation Summary page
 func (repo *Repository) Generals(responseWriter http.ResponseWriter, request *http.Request) {
 	render.RenderTemplate(responseWriter, request, "generals.page.tmpl", &models.TemplateData{})
+}
+
+// Responsible for rendering the Choose room page
+func (repo *Repository) ChooseRoom(responseWriter http.ResponseWriter, request *http.Request) {
+	roomID, err := strconv.Atoi(chi.URLParam(request, "id"))
+	if err != nil {
+		helpers.ServerError(responseWriter, err)
+		return
+	}
+
+	res, ok := repo.Config.Session.Get(request.Context(), "reservation").(models.Reservation)
+	if !ok {
+		helpers.ServerError(responseWriter, err)
+		return
+	}
+
+	res.RoomID = roomID
+
+	repo.Config.Session.Put(request.Context(), "reservation", res)
+
+	http.Redirect(responseWriter, request, "/make-reservation", http.StatusSeeOther)
 }

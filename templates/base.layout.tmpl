@@ -86,9 +86,9 @@
 
 
     <div class="mt-5">
-        <footer class="mt-auto my-footer">
+        <footer class="mt-auto my-footer fixed-bottom">
             <div class="container">
-                <h6 class="text-muted text-center"><span id="year"></span>The Go Hotel<h6>
+                <h6 class="text-muted text-center mt-2">All rights reserved @Bookings.go</h6>
             </div>
         </footer>
     </div>
@@ -150,7 +150,7 @@
             })
         }
 
-        {{with .Error}}
+        {{ with .Error}}
         notify("{{.}}", "error");
         {{ end }}
 
