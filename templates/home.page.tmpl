@@ -1,6 +1,19 @@
 {{template "base" .}}
 
 {{define "content"}}
+<style>
+    #main-carousel {
+        width: 70%;
+        display: flex;
+        justify-content: center;
+        margin: 1vh auto 0 auto;
+    }
+
+    .carousel-inner {
+        border-radius: 10px;
+    }
+</style>
+
 <div id="main-carousel" class="carousel slide" data-ride="carousel">
 
     <ol class="carousel-indicators">
