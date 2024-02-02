@@ -1,25 +1,22 @@
 package usecases
 
 import (
-	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/helpers"
-	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
 )
 
 // Responsible for rendering the Availability JSON page
 func (repo *Repository) PostAvailabilityJSON(responseWriter http.ResponseWriter, request *http.Request) {
-	response := models.JsonResponse{
-		OK:      true,
-		Message: "Available!",
-	}
+	startDate := helpers.ConvertDateFromString(request.Form.Get("start"), responseWriter)
+	endDate := helpers.ConvertDateFromString(request.Form.Get("end"), responseWriter)
 
-	out, err := json.MarshalIndent(response, "", "     ")
+	roomID, err := strconv.Atoi(request.Form.Get("room_id"))
 	if err != nil {
 		helpers.ServerError(responseWriter, err)
 	}
 
-	responseWriter.Header().Set("Content-Type", "application/json")
-	responseWriter.Write(out)
+	available, err := repo.Database.SearchAvailabilityByDateAndRoom(startDate, endDate, roomID)
+	helpers.JsonResponse(responseWriter, http.StatusOK, available)
 }
