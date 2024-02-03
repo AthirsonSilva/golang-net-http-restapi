@@ -108,6 +108,7 @@ func (r *postgresRepository) SearchAvailabilityByDateForAllRooms(
 ) ([]models.Room, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+
 	query := `
 						SELECT r.id, r.room_name
 						FROM rooms r
