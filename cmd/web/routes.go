@@ -17,7 +17,6 @@ func routes(app *config.AppConfig) http.Handler {
 	router.Use(NoSurf)
 	router.Use(SessionLoad)
 	router.Use(WriteToConsole)
-	// router.Use(VerifyUserAuthentication)
 
 	router.Get("/", usecases.Repo.Home)
 	router.Get("/about", usecases.Repo.About)
@@ -37,8 +36,15 @@ func routes(app *config.AppConfig) http.Handler {
 	router.Get("/login", usecases.Repo.LoginPage)
 	router.Post("/login", usecases.Repo.Login)
 
+	router.Get("/logout", usecases.Repo.Logout)
+
 	fileServer := http.FileServer(http.Dir("./static/"))
 	router.Handle("/static/*", http.StripPrefix("/static", fileServer))
+
+	router.Route("/admin", func(router chi.Router) {
+		router.Use(VerifyUserAuthentication)
+		router.Get("/dashboard", usecases.Repo.AdminDashboard)
+	})
 
 	return router
 }

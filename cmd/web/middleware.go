@@ -52,7 +52,7 @@ func SessionLoad(next http.Handler) http.Handler {
 func VerifyUserAuthentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		if !helpers.IsAuthenticated(req) {
-			log.Println("There is not user currently logged in")
+			log.Println("There is no user currently logged in")
 			session.Put(req.Context(), "error", "Log in first!")
 			http.Redirect(res, req, "/", http.StatusSeeOther)
 			return

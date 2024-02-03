@@ -12,8 +12,10 @@ import (
 	"github.com/alexedwards/scs/v2"
 )
 
-var testSession *scs.SessionManager
-var testAppConfig config.AppConfig
+var (
+	testSession   *scs.SessionManager
+	testAppConfig config.AppConfig
+)
 
 func TestMain(m *testing.M) {
 	// Enable value storing on the Session type
@@ -35,7 +37,7 @@ func TestMain(m *testing.M) {
 	testAppConfig.Session = testSession
 
 	// Set the app config to the test config
-	TestAppConfig = &testAppConfig
+	app = &testAppConfig
 
 	os.Exit(m.Run())
 }

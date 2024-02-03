@@ -34,9 +34,9 @@ func TestRenderTemplate(t *testing.T) {
 	}
 
 	// Initialize loggers
-	TestAppConfig.InfoLog = log.New(os.Stdout, "INFO => ", log.Ldate|log.Ltime)
-	TestAppConfig.ErrorLog = log.New(os.Stdout, "ERROR => ", log.Ldate|log.Ltime|log.Lshortfile)
-	TestAppConfig.TemplateCache = templateCache
+	app.InfoLog = log.New(os.Stdout, "INFO => ", log.Ldate|log.Ltime)
+	app.ErrorLog = log.New(os.Stdout, "ERROR => ", log.Ldate|log.Ltime|log.Lshortfile)
+	app.TemplateCache = templateCache
 
 	testRequest, err := getSession()
 	if err != nil {
@@ -72,7 +72,7 @@ func getSession() (*http.Request, error) {
 }
 
 func TestNewTemplate(t *testing.T) {
-	NewRenderer(TestAppConfig)
+	NewRenderer(app)
 }
 
 func TestCreateTemplateCache(t *testing.T) {
