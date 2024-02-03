@@ -28,7 +28,6 @@ func (r *Repository) Login(responseWriter http.ResponseWriter, request *http.Req
 	id, _, err := r.Database.Authenticate(email, password)
 	if err != nil {
 		log.Println(err)
-
 		r.Config.Session.Put(request.Context(), "error", "Invalid login credentials")
 		http.Redirect(responseWriter, request, "/login", http.StatusSeeOther)
 	}
