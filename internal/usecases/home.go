@@ -8,6 +8,6 @@ import (
 )
 
 // Responsible for the Home page
-func (repo *Repository) Home(responseWriter http.ResponseWriter, request *http.Request) {
-	render.RenderTemplate(responseWriter, request, "home.page.tmpl", &models.TemplateData{})
+func (repo *Repository) Home(res http.ResponseWriter, req *http.Request) {
+	render.RenderTemplate(res, req, "home.page.tmpl", &models.TemplateData{})
 }

@@ -10,21 +10,21 @@ import (
 )
 
 // Responsible for rendering the Choose room page
-func (repo *Repository) ChooseRoom(responseWriter http.ResponseWriter, request *http.Request) {
-	roomID, err := strconv.Atoi(chi.URLParam(request, "id"))
+func (repo *Repository) ChooseRoom(res http.ResponseWriter, req *http.Request) {
+	roomID, err := strconv.Atoi(chi.URLParam(req, "id"))
 	if err != nil {
-		helpers.ServerError(responseWriter, err)
+		helpers.ServerError(res, err)
 		return
 	}
 
-	res, ok := repo.Config.Session.Get(request.Context(), "reservation").(models.Reservation)
+	reservation, ok := repo.Config.Session.Get(req.Context(), "reservation").(models.Reservation)
 	if !ok {
-		helpers.ServerError(responseWriter, err)
+		helpers.ServerError(res, err)
 		return
 	}
 
-	res.RoomID = roomID
-	repo.Config.Session.Put(request.Context(), "reservation", res)
+	reservation.RoomID = roomID
+	repo.Config.Session.Put(req.Context(), "reservation", res)
 
-	http.Redirect(responseWriter, request, "/make-reservation", http.StatusSeeOther)
+	http.Redirect(res, req, "/make-reservation", http.StatusSeeOther)
 }

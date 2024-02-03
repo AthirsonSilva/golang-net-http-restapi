@@ -11,33 +11,38 @@ import (
 )
 
 // Responsible for the MakeReservation page
-func (repo *Repository) MakeReservation(responseWriter http.ResponseWriter, request *http.Request) {
-	res, ok := repo.Config.Session.Get(request.Context(), "reservation").(models.Reservation)
+func (repo *Repository) MakeReservation(res http.ResponseWriter, req *http.Request) {
+	reservation, ok := repo.Config.Session.Get(req.Context(), "reservation").(models.Reservation)
 	if !ok {
-		helpers.ServerError(responseWriter, errors.New("cannot get reservation from session"))
+		helpers.ServerError(res, errors.New("cannot get reservation from session"))
 		return
 	}
 
-	room, err := repo.Database.GetRoomByID(res.RoomID)
+	room, err := repo.Database.GetRoomByID(reservation.RoomID)
 	if err != nil {
-		helpers.ServerError(responseWriter, err)
+		helpers.ServerError(res, err)
 		return
 	}
 
-	res.Room.RoomName = room.RoomName
+	reservation.Room.RoomName = room.RoomName
 
-	repo.Config.Session.Put(request.Context(), "reservation", res)
+	repo.Config.Session.Put(req.Context(), "reservation", res)
 
 	data := make(map[string]interface{})
-	data["reservation"] = res
+	data["reservation"] = reservation
 
 	dateMap := make(map[string]string)
-	dateMap["start_date"] = res.StartDate.Format("2006-01-02")
-	dateMap["end_date"] = res.EndDate.Format("2006-01-02")
+	dateMap["start_date"] = reservation.StartDate.Format("2006-01-02")
+	dateMap["end_date"] = reservation.EndDate.Format("2006-01-02")
 
-	render.RenderTemplate(responseWriter, request, "make-reservation.page.tmpl", &models.TemplateData{
-		Form:    forms.New(nil),
-		Data:    data,
-		DateMap: dateMap,
-	})
+	render.RenderTemplate(
+		res,
+		req,
+		"make-reservation.page.tmpl",
+		&models.TemplateData{
+			Form:    forms.New(nil),
+			Data:    data,
+			DateMap: dateMap,
+		},
+	)
 }

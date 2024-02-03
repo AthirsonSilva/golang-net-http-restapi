@@ -9,16 +9,16 @@ import (
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
 )
 
-func (repo *Repository) ReservationSummary(responseWriter http.ResponseWriter, request *http.Request) {
-	reservation, ok := repo.Config.Session.Get(request.Context(), "reservation").(models.Reservation)
+func (repo *Repository) ReservationSummary(res http.ResponseWriter, req *http.Request) {
+	reservation, ok := repo.Config.Session.Get(req.Context(), "reservation").(models.Reservation)
 	if !ok {
-		helpers.ServerError(responseWriter, errors.New("cannot get reservation"))
+		helpers.ServerError(res, errors.New("cannot get reservation"))
 		return
 	}
 
 	data := make(map[string]interface{})
 	data["reservation"] = reservation
-	repo.Config.Session.Remove(request.Context(), "reservation")
+	repo.Config.Session.Remove(req.Context(), "reservation")
 
 	startDate := reservation.StartDate.Format("2006-01-02")
 	endDate := reservation.EndDate.Format("2006-01-02")
@@ -28,7 +28,7 @@ func (repo *Repository) ReservationSummary(responseWriter http.ResponseWriter, r
 	dateMap["end_date"] = endDate
 
 	// Render the Reservation Summary page
-	render.RenderTemplate(responseWriter, request, "reservation-summary.page.tmpl", &models.TemplateData{
+	render.RenderTemplate(res, req, "reservation-summary.page.tmpl", &models.TemplateData{
 		Data:    data,
 		DateMap: dateMap,
 	})

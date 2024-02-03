@@ -10,14 +10,14 @@ import (
 )
 
 // Responsible for receiving the data from the Availability page
-func (repo *Repository) PostAvailability(responseWriter http.ResponseWriter, request *http.Request) {
-	request.ParseForm()
-	startDate := helpers.ConvertDateFromString(request.Form.Get("start"), responseWriter)
-	endDate := helpers.ConvertDateFromString(request.Form.Get("end"), responseWriter)
+func (repo *Repository) PostAvailability(res http.ResponseWriter, req *http.Request) {
+	req.ParseForm()
+	startDate := helpers.ConvertDateFromString(req.Form.Get("start"), res)
+	endDate := helpers.ConvertDateFromString(req.Form.Get("end"), res)
 
 	rooms, err := Repo.Database.SearchAvailabilityByDateForAllRooms(startDate, endDate)
 	if err != nil {
-		helpers.ServerError(responseWriter, err)
+		helpers.ServerError(res, err)
 		return
 	}
 
@@ -26,23 +26,23 @@ func (repo *Repository) PostAvailability(responseWriter http.ResponseWriter, req
 	}
 
 	if len(rooms) == 0 {
-		Repo.Config.Session.Put(request.Context(), "error", "No availability")
-		http.Redirect(responseWriter, request, "/search-availability", http.StatusSeeOther)
+		Repo.Config.Session.Put(req.Context(), "error", "No availability")
+		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
 		return
 	}
 
 	data := make(map[string]interface{})
 	data["rooms"] = rooms
 
-	res := models.Reservation{
+	reservation := models.Reservation{
 		StartDate: startDate,
 		EndDate:   endDate,
 		RoomID:    0,
 	}
 
-	repo.Config.Session.Put(request.Context(), "reservation", res)
+	repo.Config.Session.Put(req.Context(), "reservation", reservation)
 
-	render.RenderTemplate(responseWriter, request, "choose-room.page.tmpl", &models.TemplateData{
+	render.RenderTemplate(res, req, "choose-room.page.tmpl", &models.TemplateData{
 		Data: data,
 	})
 }

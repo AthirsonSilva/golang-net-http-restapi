@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-type requestData struct {
+type reqData struct {
 	key   string
 	value string
 }
@@ -16,31 +16,31 @@ type testStructure struct {
 	name         string
 	url          string
 	method       string
-	params       []requestData
+	params       []reqData
 	expectedCode int
 }
 
 var testList = []testStructure{
-	{"Index", "/", "GET", []requestData{}, http.StatusOK},
-	{"About", "/about", "GET", []requestData{}, http.StatusOK},
-	{"Contact", "/contact", "GET", []requestData{}, http.StatusOK},
-	{"General Quartes", "/generals-quarters", "GET", []requestData{}, http.StatusOK},
-	{"Major Suites", "/majors-suite", "GET", []requestData{}, http.StatusOK},
-	{"Search Availability", "/search-availability", "GET", []requestData{}, http.StatusOK},
-	{"Post Availability", "/search-availability", "POST", []requestData{
+	{"Index", "/", "GET", []reqData{}, http.StatusOK},
+	{"About", "/about", "GET", []reqData{}, http.StatusOK},
+	{"Contact", "/contact", "GET", []reqData{}, http.StatusOK},
+	{"General Quartes", "/generals-quarters", "GET", []reqData{}, http.StatusOK},
+	{"Major Suites", "/majors-suite", "GET", []reqData{}, http.StatusOK},
+	{"Search Availability", "/search-availability", "GET", []reqData{}, http.StatusOK},
+	{"Post Availability", "/search-availability", "POST", []reqData{
 		{key: "start", value: "2020-01-01"},
 		{key: "end", value: "2020-01-02"},
 	}, http.StatusOK},
-	{"Post Availability", "/search-availability-json", "POST", []requestData{
+	{"Post Availability", "/search-availability-json", "POST", []reqData{
 		{key: "start", value: "2020-01-01"},
 		{key: "end", value: "2020-01-02"},
 	}, http.StatusOK},
-	{"Make Reservation", "/make-reservation", "POST", []requestData{
+	{"Make Reservation", "/make-reservation", "POST", []reqData{
 		{key: "first_name", value: "John"},
 		{key: "last_name", value: "Smith"},
 		{key: "email", value: "jsmith@gmail.com"},
 	}, http.StatusOK},
-	// {"Reservation Summary", "/reservation-summary", "GET", []requestData{}, http.StatusSeeOther},
+	// {"Reservation Summary", "/reservation-summary", "GET", []reqData{}, http.StatusSeeOther},
 }
 
 func TestHandlers(t *testing.T) {

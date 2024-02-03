@@ -7,7 +7,7 @@ import (
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
 )
 
-func (repo *Repository) Contact(responseWriter http.ResponseWriter, request *http.Request) {
+func (repo *Repository) Contact(res http.ResponseWriter, req *http.Request) {
 	// Responsible for rendering the Contact page
-	render.RenderTemplate(responseWriter, request, "contact.page.tmpl", &models.TemplateData{})
+	render.RenderTemplate(res, req, "contact.page.tmpl", &models.TemplateData{})
 }

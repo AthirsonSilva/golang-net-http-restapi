@@ -8,15 +8,15 @@ import (
 )
 
 // Responsible for rendering the Availability JSON page
-func (repo *Repository) PostAvailabilityJSON(responseWriter http.ResponseWriter, request *http.Request) {
-	startDate := helpers.ConvertDateFromString(request.Form.Get("start"), responseWriter)
-	endDate := helpers.ConvertDateFromString(request.Form.Get("end"), responseWriter)
+func (repo *Repository) PostAvailabilityJSON(res http.ResponseWriter, req *http.Request) {
+	startDate := helpers.ConvertDateFromString(req.Form.Get("start"), res)
+	endDate := helpers.ConvertDateFromString(req.Form.Get("end"), res)
 
-	roomID, err := strconv.Atoi(request.Form.Get("room_id"))
+	roomID, err := strconv.Atoi(req.Form.Get("room_id"))
 	if err != nil {
-		helpers.ServerError(responseWriter, err)
+		helpers.ServerError(res, err)
 	}
 
 	available, err := repo.Database.SearchAvailabilityByDateAndRoom(startDate, endDate, roomID)
-	helpers.JsonResponse(responseWriter, http.StatusOK, available)
+	helpers.JsonResponse(res, http.StatusOK, available)
 }

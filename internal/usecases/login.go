@@ -5,34 +5,39 @@ import (
 	"net/http"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/forms"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
 )
 
-func (r *Repository) Login(responseWriter http.ResponseWriter, request *http.Request) {
-	_ = r.Config.Session.RenewToken(request.Context())
+func (r *Repository) Login(res http.ResponseWriter, req *http.Request) {
+	_ = r.Config.Session.RenewToken(req.Context())
 
-	err := request.ParseForm()
+	err := req.ParseForm()
 	if err != nil {
 		log.Println(err)
 	}
 
-	email := request.Form.Get("email")
-	password := request.Form.Get("password")
+	email := req.Form.Get("email")
+	password := req.Form.Get("password")
 
-	form := forms.New(request.Form)
+	form := forms.New(req.Form)
 	form.Required("email", "password")
+	form.IsEmail("email")
 	if !form.Valid() {
-		http.Redirect(responseWriter, request, "/", http.StatusSeeOther)
+		render.RenderTemplate(res, req, "login.page.tmpl", &models.TemplateData{
+			Form: form,
+		})
 		return
 	}
 
 	id, _, err := r.Database.Authenticate(email, password)
 	if err != nil {
 		log.Println(err)
-		r.Config.Session.Put(request.Context(), "error", "Invalid login credentials")
-		http.Redirect(responseWriter, request, "/login", http.StatusSeeOther)
+		r.Config.Session.Put(req.Context(), "error", "Invalid login credentials")
+		http.Redirect(res, req, "/login", http.StatusSeeOther)
 	}
 
-	r.Config.Session.Put(request.Context(), "user_id", id)
-	r.Config.Session.Put(request.Context(), "flash", "Logged in successfully!")
-	http.Redirect(responseWriter, request, "/", http.StatusSeeOther)
+	r.Config.Session.Put(req.Context(), "user_id", id)
+	r.Config.Session.Put(req.Context(), "flash", "Logged in successfully!")
+	http.Redirect(res, req, "/", http.StatusSeeOther)
 }

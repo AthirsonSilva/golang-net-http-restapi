@@ -17,6 +17,7 @@ func routes(app *config.AppConfig) http.Handler {
 	router.Use(NoSurf)
 	router.Use(SessionLoad)
 	router.Use(WriteToConsole)
+	// router.Use(VerifyUserAuthentication)
 
 	router.Get("/", usecases.Repo.Home)
 	router.Get("/about", usecases.Repo.About)

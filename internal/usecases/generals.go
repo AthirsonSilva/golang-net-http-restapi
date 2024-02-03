@@ -8,6 +8,6 @@ import (
 )
 
 // Responsible for rendering the Reservation Summary page
-func (repo *Repository) Generals(responseWriter http.ResponseWriter, request *http.Request) {
-	render.RenderTemplate(responseWriter, request, "generals.page.tmpl", &models.TemplateData{})
+func (repo *Repository) Generals(res http.ResponseWriter, req *http.Request) {
+	render.RenderTemplate(res, req, "generals.page.tmpl", &models.TemplateData{})
 }

@@ -13,81 +13,81 @@ import (
 )
 
 // Responsible for the PostReservation page
-func (repo *Repository) PostReservation(responseWriter http.ResponseWriter, request *http.Request) {
-	res, ok := repo.Config.Session.Get(request.Context(), "reservation").(models.Reservation)
+func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Request) {
+	reservation, ok := repo.Config.Session.Get(req.Context(), "reservation").(models.Reservation)
 	if !ok {
-		helpers.ServerError(responseWriter, errors.New("cannot get reservation from session"))
+		helpers.ServerError(res, errors.New("cannot get reservation from session"))
 		return
 	}
 
-	err := request.ParseForm()
+	err := req.ParseForm()
 	if err != nil {
-		helpers.ServerError(responseWriter, err)
+		helpers.ServerError(res, err)
 		return
 	}
 
-	err = request.ParseForm()
+	err = req.ParseForm()
 	if err != nil {
-		helpers.ServerError(responseWriter, err)
+		helpers.ServerError(res, err)
 		return
 	}
 
-	raw_start_date := request.Form.Get("start_date")
-	raw_end_date := request.Form.Get("end_date")
+	raw_start_date := req.Form.Get("start_date")
+	raw_end_date := req.Form.Get("end_date")
 	layout := "2006-01-02"
 
 	parsed_start_date, err := time.Parse(layout, raw_start_date)
 	if err != nil {
-		helpers.ServerError(responseWriter, err)
+		helpers.ServerError(res, err)
 		return
 	}
 
 	parsed_end_date, err := time.Parse(layout, raw_end_date)
 	if err != nil {
-		helpers.ServerError(responseWriter, err)
+		helpers.ServerError(res, err)
 		return
 	}
 
-	form := forms.New(request.PostForm)
+	form := forms.New(req.PostForm)
 	form.Required("first_name", "last_name", "email", "phone", "start_date", "end_date")
 	form.IsEmail("email")
 	for _, field := range []string{"first_name", "last_name"} {
-		form.MinLength(field, 2, request)
+		form.MinLength(field, 2, req)
 	}
 
 	if err != nil {
-		helpers.ServerError(responseWriter, err)
+		helpers.ServerError(res, err)
 		return
 	}
 
 	if !form.Valid() {
 		data := make(map[string]interface{})
-		data["reservation"] = res
+		data["reservation"] = reservation
 
-		render.RenderTemplate(responseWriter, request, "make-reservation.page.tmpl", &models.TemplateData{
+		render.RenderTemplate(res, req, "make-reservation.page.tmpl", &models.TemplateData{
 			Form: form,
 			Data: data,
 		})
 	}
 
-	roomID, err := strconv.Atoi(request.Form.Get("room_id"))
+	roomID, err := strconv.Atoi(req.Form.Get("room_id"))
 	if err != nil {
-		helpers.ServerError(responseWriter, err)
+		helpers.ServerError(res, err)
 		return
 	}
 
-	res.FirstName = request.Form.Get("first_name")
-	res.LastName = request.Form.Get("last_name")
-	res.Email = request.Form.Get("email")
-	res.Phone = request.Form.Get("phone")
-	res.RoomID = roomID
-	res.StartDate = parsed_start_date
-	res.EndDate = parsed_end_date
+	reservation.FirstName = req.Form.Get("first_name")
+	reservation.LastName = req.Form.Get("last_name")
+	reservation.Email = req.Form.Get("email")
+	reservation.Phone = req.Form.Get("phone")
+	reservation.RoomID = roomID
+	reservation.StartDate = parsed_start_date
+	reservation.EndDate = parsed_end_date
 
 	var reservationId int
-	reservationId, err = Repo.Database.InsertReservation(res)
+	reservationId, err = Repo.Database.InsertReservation(reservation)
 	if err != nil {
-		helpers.ServerError(responseWriter, err)
+		helpers.ServerError(res, err)
 		return
 	}
 
@@ -104,10 +104,10 @@ func (repo *Repository) PostReservation(responseWriter http.ResponseWriter, requ
 
 	err = Repo.Database.InsertRoomRestriction(restriction)
 	if err != nil {
-		helpers.ServerError(responseWriter, err)
+		helpers.ServerError(res, err)
 		return
 	}
 
-	repo.Config.Session.Put(request.Context(), "reservation", res)
-	http.Redirect(responseWriter, request, "/reservation-summary", http.StatusSeeOther)
+	repo.Config.Session.Put(req.Context(), "reservation", res)
+	http.Redirect(res, req, "/reservation-summary", http.StatusSeeOther)
 }

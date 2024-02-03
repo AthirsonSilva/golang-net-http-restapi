@@ -8,6 +8,6 @@ import (
 )
 
 // Responsible for the About page
-func (repo *Repository) About(responseWriter http.ResponseWriter, request *http.Request) {
-	render.RenderTemplate(responseWriter, request, "about.page.tmpl", &models.TemplateData{})
+func (repo *Repository) About(res http.ResponseWriter, req *http.Request) {
+	render.RenderTemplate(res, req, "about.page.tmpl", &models.TemplateData{})
 }

@@ -8,6 +8,6 @@ import (
 )
 
 // Responsible for rendering the Availability page
-func (repo *Repository) Availability(responseWriter http.ResponseWriter, request *http.Request) {
-	render.RenderTemplate(responseWriter, request, "search-availability.page.tmpl", &models.TemplateData{})
+func (repo *Repository) Availability(res http.ResponseWriter, req *http.Request) {
+	render.RenderTemplate(res, req, "search-availability.page.tmpl", &models.TemplateData{})
 }

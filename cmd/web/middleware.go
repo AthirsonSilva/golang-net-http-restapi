@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/helpers"
 	"github.com/justinas/nosurf"
 )
 
@@ -45,4 +46,19 @@ func NoSurf(next http.Handler) http.Handler {
 // SessionLoad loads and saves the session on every request
 func SessionLoad(next http.Handler) http.Handler {
 	return session.LoadAndSave(next)
+}
+
+// VerifyUserAuthentication verifies if the user is logged in
+func VerifyUserAuthentication(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		if !helpers.IsAuthenticated(req) {
+			log.Println("There is not user currently logged in")
+			session.Put(req.Context(), "error", "Log in first!")
+			http.Redirect(res, req, "/", http.StatusSeeOther)
+			return
+		}
+
+		log.Println("The user is logged in!")
+		next.ServeHTTP(res, req)
+	})
 }
