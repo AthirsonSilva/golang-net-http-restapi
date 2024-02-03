@@ -10,11 +10,19 @@ import (
 
 type DatabaseRepository interface {
 	FindAllUsers() bool
+
 	InsertReservation(reservation models.Reservation) (int, error)
 	InsertRoomRestriction(roomRestriction models.RoomRestriction) error
+
 	SearchAvailabilityByDateAndRoom(start time.Time, end time.Time, roomID int) (bool, error)
 	SearchAvailabilityByDateForAllRooms(start time.Time, end time.Time) ([]models.Room, error)
+
 	GetRoomByID(roomID int) (models.Room, error)
+	GetUserByID(id int) (models.User, error)
+
+	Authenticate(email string, testPassword string) (int, string, error)
+
+	UpdateUser(user models.User) error
 }
 
 func (r *postgresRepository) FindAllUsers() bool {

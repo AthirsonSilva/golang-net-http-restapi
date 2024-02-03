@@ -33,6 +33,8 @@ func routes(app *config.AppConfig) http.Handler {
 	router.Post("/search-availability", usecases.Repo.PostAvailability)
 	router.Get("/choose-room/{id}", usecases.Repo.ChooseRoom)
 
+	router.Get("/login", usecases.Repo.ShowLoginPage)
+
 	fileServer := http.FileServer(http.Dir("./static/"))
 	router.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
