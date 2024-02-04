@@ -10,7 +10,7 @@ import (
 func TestRoutes(t *testing.T) {
 	var appConfig config.AppConfig
 
-	router := routes(&appConfig)
+	router := Routes(&appConfig)
 
 	switch v := router.(type) {
 	case *chi.Mux:
