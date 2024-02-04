@@ -46,7 +46,7 @@ func Routes(app *config.AppConfig) http.Handler {
 		router.Get("/dashboard", usecases.Repo.AdminDashboard)
 		router.Get("/reservations/new", usecases.Repo.AdminAllNewReservations)
 		router.Get("/reservations/all", usecases.Repo.AdminAllReservations)
-		router.Get("/reservation/calendar", usecases.Repo.AdminReservationsCalendar)
+		router.Get("/reservations/calendar", usecases.Repo.AdminReservationsCalendar)
 		router.Get("/reservations/{id}", usecases.Repo.AdminShowSingleReservation)
 		router.Get("/reservations/delete/{id}", usecases.Repo.AdminDeleteReservationByID)
 		router.Post("/reservations/update", usecases.Repo.AdminUpdateReservation)
