@@ -9,7 +9,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-// Creates a new Chi router and routes all available endpoints
+// Creates a new router to distribute all available endpoints
 func routes(app *config.AppConfig) http.Handler {
 	router := chi.NewRouter()
 
@@ -44,7 +44,7 @@ func routes(app *config.AppConfig) http.Handler {
 		// router.Use(VerifyUserAuthentication)
 		router.Get("/dashboard", usecases.Repo.AdminDashboard)
 
-		router.Get("/reservations/new", usecases.Repo.AdminNewReservation)
+		router.Get("/reservations/new", usecases.Repo.AdminAllNewReservations)
 		router.Get("/reservations/all", usecases.Repo.AdminAllReservations)
 		router.Get("/reservation/calendar", usecases.Repo.AdminReservationsCalendar)
 	})

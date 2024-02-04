@@ -12,6 +12,7 @@ type DatabaseRepository interface {
 	// Reservations methods
 	InsertReservation(reservation models.Reservation) (int, error)
 	GetAllReservations() ([]models.Reservation, error)
+	GetAllNewReservations() ([]models.Reservation, error)
 
 	// RoomRestriction methods
 	InsertRoomRestriction(roomRestriction models.RoomRestriction) error
