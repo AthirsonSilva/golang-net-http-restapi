@@ -46,12 +46,11 @@ func (r *postgresRepository) GetAllReservations() ([]models.Reservation, error) 
 			re.start_date,
 			re.end_date,
 			re.room_id,
-			ro.id,
 			ro.room_name,
 			re.processed
 		FROM reservations re
 		LEFT JOIN rooms ro ON (ro.id = re.room_id)
-		ORDER BY re.start_date asc
+		ORDER BY re.start_date ASC
 	`
 
 	rows, err := r.DB.SQL.Query(query)
@@ -72,7 +71,6 @@ func (r *postgresRepository) GetAllReservations() ([]models.Reservation, error) 
 			&i.StartDate,
 			&i.EndDate,
 			&i.RoomID,
-			&i.ID,
 			&i.Room.RoomName,
 			&i.Processed,
 		)
@@ -99,7 +97,6 @@ func (r *postgresRepository) GetAllNewReservations() ([]models.Reservation, erro
 			re.start_date,
 			re.end_date,
 			re.room_id,
-			ro.id,
 			ro.room_name,
 			re.processed
 		FROM reservations re
@@ -126,7 +123,6 @@ func (r *postgresRepository) GetAllNewReservations() ([]models.Reservation, erro
 			&i.StartDate,
 			&i.EndDate,
 			&i.RoomID,
-			&i.ID,
 			&i.Room.RoomName,
 			&i.Processed,
 		)
@@ -153,7 +149,6 @@ func (r *postgresRepository) GetReservationByID(id int) (models.Reservation, err
 			re.start_date,
 			re.end_date,
 			re.room_id,
-			ro.id,
 			ro.room_name,
 			re.processed
 		FROM reservations re
@@ -173,7 +168,6 @@ func (r *postgresRepository) GetReservationByID(id int) (models.Reservation, err
 		&reservation.StartDate,
 		&reservation.EndDate,
 		&reservation.RoomID,
-		&reservation.ID,
 		&reservation.Room.RoomName,
 		&reservation.Processed,
 	)
@@ -182,4 +176,48 @@ func (r *postgresRepository) GetReservationByID(id int) (models.Reservation, err
 	}
 
 	return reservation, nil
+}
+
+func (r *postgresRepository) DeleteReservationByID(id int) error {
+	query := `
+		DELETE FROM reservations
+		WHERE id = $1
+	`
+
+	_, err := r.DB.SQL.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *postgresRepository) UpdateReservation(reservation models.Reservation) error {
+	query := `
+		UPDATE reservations
+		SET 
+			first_name = $1,
+			last_name = $2,
+			email = $3,
+			phone = $4,
+			start_date = $5,
+			end_date = $6
+		WHERE id = $7
+		`
+
+	_, err := r.DB.SQL.Exec(
+		query,
+		reservation.FirstName,
+		reservation.LastName,
+		reservation.Email,
+		reservation.Phone,
+		reservation.StartDate,
+		reservation.EndDate,
+		reservation.ID,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

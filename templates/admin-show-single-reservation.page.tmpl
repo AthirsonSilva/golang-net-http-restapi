@@ -2,6 +2,19 @@
 
 {{define "css"}}
 <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+<style>
+.form-control {
+  height: 12px;
+}
+
+.btn {
+  margin-bottom: 10px;
+}
+
+a {
+  margin-left: 10px;
+}
+</style>
 {{end}}
 
 {{define "page-title"}}
@@ -14,30 +27,52 @@
         
         <table class="table table-striped">
           <tbody>
+            <form action="/admin/reservations/update" method="POST">
+            <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+            <input type="hidden" name="id" value="{{$res.ID}}" />
             <tr>
-              <td>Name:</td>
-              <td>{{$res.FirstName}} {{$res.LastName}}</td>
+              <td>First Name:</td>
+              <td>
+                <input class="form-control" type="text" required name="first_name" value="{{$res.FirstName}}" />
+              </td>
+            </tr>
+            <tr>
+              <td>Last Name:</td>
+              <td>
+                <input class="form-control" type="text" required name="last_name" value="{{$res.LastName}}" />
+              </td>
             </tr>
             <tr>
               <td>Arrival:</td>
-              <td>{{fmtDate $res.StartDate}}</td>
+              <td>
+                <input class="form-control" type="text" required name="start_date" value="{{fmtDate $res.StartDate}}" />
+              </td>
             </tr>
             <tr>
               <td>Departure:</td>
-              <td>{{fmtDate $res.EndDate}}</td>
+              <td>
+                <input class="form-control" type="text" required name="end_date" value="{{fmtDate $res.EndDate}}" />
+              </td>
             </tr>
             <tr>
               <td>Email:</td>
-              <td>{{$res.Email}}</td>
+              <td>
+                <input class="form-control" type="email" required name="email" value="{{$res.Email}}" />
+              </td>
             </tr>
             <tr>
               <td>Phone:</td>
-              <td>{{$res.Phone}}</td>
+              <td>
+                <input class="form-control" type="tel" required name="phone" value="{{$res.Phone}}" />
+              </td>
             </tr>
             <tr>
               <td>Room Name:</td>
               <td>{{$res.Room.RoomName}}</td>
             </tr>
+            <button type="submit" class="btn btn-primary">Update informations</button>
+            <a href="/admin/reservations/delete/{{$res.ID}}" class="btn btn-danger">Delete reservation</a>
+            </form>
           </tbody>
         </table>
 

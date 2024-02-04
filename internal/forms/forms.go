@@ -45,11 +45,16 @@ func (form *Form) Required(fields ...string) {
 }
 
 // Checks if the given field from the request has the passed minimum lenght
-func (form *Form) MinLength(field string, length int, request *http.Request) bool {
-	fieldValue := request.Form.Get(field)
-	if len(fieldValue) < length {
-		form.Errors.Add(field, fmt.Sprintf("This field must be at least %d characters long", length))
-		return false
+func (form *Form) MinLength(length int, request *http.Request, fields ...string) bool {
+	for _, field := range fields {
+		value := form.Data.Get(field)
+		if len(value) < length {
+			form.Errors.Add(
+				field,
+				fmt.Sprintf("This field must be at least %d characters long", length),
+			)
+			return false
+		}
 	}
 	return true
 }

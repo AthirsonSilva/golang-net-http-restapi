@@ -51,9 +51,7 @@ func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Reque
 	form := forms.New(req.PostForm)
 	form.Required("first_name", "last_name", "email", "phone", "start_date", "end_date")
 	form.IsEmail("email")
-	for _, field := range []string{"first_name", "last_name"} {
-		form.MinLength(field, 2, req)
-	}
+	form.MinLength(2, req, "first_name", "last_name")
 
 	if err != nil {
 		helpers.ServerError(res, err)

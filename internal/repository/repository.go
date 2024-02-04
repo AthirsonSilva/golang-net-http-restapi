@@ -14,6 +14,8 @@ type DatabaseRepository interface {
 	GetReservationByID(id int) (models.Reservation, error)
 	GetAllReservations() ([]models.Reservation, error)
 	GetAllNewReservations() ([]models.Reservation, error)
+	DeleteReservationByID(id int) error
+	UpdateReservation(reservation models.Reservation) error
 
 	// RoomRestriction methods
 	InsertRoomRestriction(roomRestriction models.RoomRestriction) error

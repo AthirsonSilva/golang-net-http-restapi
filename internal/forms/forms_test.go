@@ -62,7 +62,7 @@ func TestForm_MinLength(t *testing.T) {
 	postedData := url.Values{}
 	form := New(postedData)
 
-	form.MinLength("short", 10, request)
+	form.MinLength(10, request, "short")
 	if form.Valid() {
 		t.Error("Form shows min length for non-existent field")
 	}
@@ -74,7 +74,7 @@ func TestForm_MinLength(t *testing.T) {
 	postedData.Add("some_field", "some value")
 	form = New(postedData)
 
-	form.MinLength("some_field", 100, request)
+	form.MinLength(100, request, "Some word")
 	if form.Valid() {
 		t.Error("Shows min length of 100 met when data is shorter")
 	}
@@ -96,7 +96,6 @@ func TestForm_IsEmail(t *testing.T) {
 	form.IsEmail("email")
 	if !form.Valid() {
 		t.Error("Should not have an invalid email error")
-
 	}
 
 	postedData = url.Values{}
