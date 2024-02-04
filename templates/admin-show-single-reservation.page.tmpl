@@ -70,6 +70,12 @@ a {
               <td>Room Name:</td>
               <td>{{$res.Room.RoomName}}</td>
             </tr>
+            <tr>
+              <td>Processed:</td>
+              <td>
+                 <input class="form-control form-check-input" type="checkbox" name="processed" id="flexCheckChecked" {{if eq $res.Processed 1}} checked {{end}}>
+              </td>
+            </tr>
             <button type="submit" class="btn btn-primary">Update informations</button>
             <a href="/admin/reservations/delete/{{$res.ID}}" class="btn btn-danger">Delete reservation</a>
             </form>

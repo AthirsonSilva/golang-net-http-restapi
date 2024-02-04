@@ -31,6 +31,12 @@ func (r *Repository) AdminUpdateReservation(res http.ResponseWriter, req *http.R
 	startDate := req.Form.Get("start_date")
 	endDate := req.Form.Get("end_date")
 
+	var processed int
+	strProcessed := req.Form.Get("processed")
+	if strProcessed == "on" {
+		processed = 1
+	}
+
 	form := forms.New(req.Form)
 	form.Required("firstName", "lastName", "email", "phone", "start_date", "end_date")
 	form.MinLength(2, req, "firstName", "lastName", "email", "phone", "start_date", "end_date")
@@ -47,6 +53,7 @@ func (r *Repository) AdminUpdateReservation(res http.ResponseWriter, req *http.R
 		Phone:     phone,
 		StartDate: parsedStartDate,
 		EndDate:   parsedEndDate,
+		Processed: processed,
 	}
 
 	err = r.Database.UpdateReservation(newReservation)

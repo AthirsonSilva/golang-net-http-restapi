@@ -201,8 +201,9 @@ func (r *postgresRepository) UpdateReservation(reservation models.Reservation) e
 			email = $3,
 			phone = $4,
 			start_date = $5,
-			end_date = $6
-		WHERE id = $7
+			end_date = $6,
+			processed = $7
+		WHERE id = $8
 		`
 
 	_, err := r.DB.SQL.Exec(
@@ -213,6 +214,7 @@ func (r *postgresRepository) UpdateReservation(reservation models.Reservation) e
 		reservation.Phone,
 		reservation.StartDate,
 		reservation.EndDate,
+		reservation.Processed,
 		reservation.ID,
 	)
 	if err != nil {
