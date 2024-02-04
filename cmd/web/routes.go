@@ -20,7 +20,6 @@ func routes(app *config.AppConfig) http.Handler {
 
 	router.Get("/", usecases.Repo.Home)
 	router.Get("/about", usecases.Repo.About)
-	router.Get("/contact", usecases.Repo.Contact)
 	router.Get("/generals-quarters", usecases.Repo.Generals)
 	router.Get("/majors-suite", usecases.Repo.Majors)
 
@@ -42,8 +41,12 @@ func routes(app *config.AppConfig) http.Handler {
 	router.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
 	router.Route("/admin", func(router chi.Router) {
-		router.Use(VerifyUserAuthentication)
+		// router.Use(VerifyUserAuthentication)
 		router.Get("/dashboard", usecases.Repo.AdminDashboard)
+
+		router.Get("/reservations/new", usecases.Repo.AdminNewReservation)
+		router.Get("/reservations/all", usecases.Repo.AdminAllReservations)
+		router.Get("/reservation/calendar", usecases.Repo.AdminReservationsCalendar)
 	})
 
 	return router

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"text/template"
+	"time"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
@@ -18,12 +19,19 @@ import (
 var (
 	app             *config.AppConfig
 	pathToTemplates = "./templates"
-	functions       = template.FuncMap{}
+	functions       = template.FuncMap{
+		"fmtDate": FormattedDate,
+	}
 )
 
 // Creates a new instance of the Templates function
 func NewRenderer(ac *config.AppConfig) {
 	app = ac
+}
+
+// FormattedDate returns a more readable date
+func FormattedDate(t time.Time) string {
+	return t.Format("2006-01-02")
 }
 
 // AddDefaultData adds data for all templates

@@ -9,24 +9,27 @@ import (
 )
 
 type DatabaseRepository interface {
-	FindAllUsers() bool
-
+	// Reservations methods
 	InsertReservation(reservation models.Reservation) (int, error)
+	GetAllReservations() ([]models.Reservation, error)
+
+	// RoomRestriction methods
 	InsertRoomRestriction(roomRestriction models.RoomRestriction) error
 
+	// Rooms methods
 	SearchAvailabilityByDateAndRoom(start time.Time, end time.Time, roomID int) (bool, error)
 	SearchAvailabilityByDateForAllRooms(start time.Time, end time.Time) ([]models.Room, error)
-
 	GetRoomByID(roomID int) (models.Room, error)
+
+	// User methods
 	GetUserByID(id int) (models.User, error)
-
-	Authenticate(email string, testPassword string) (int, string, error)
-
+	GetUserByEmailAndPassword(email string, testPassword string) (int, string, error)
 	UpdateUser(user models.User) error
 }
 
-func (r *postgresRepository) FindAllUsers() bool {
-	return true
+type postgresRepository struct {
+	Config *config.AppConfig
+	DB     *database.Database
 }
 
 func NewPostgresRepository(config *config.AppConfig, db *database.Database) DatabaseRepository {

@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -11,7 +12,9 @@ import (
 
 // Responsible for rendering the Choose room page
 func (repo *Repository) ChooseRoom(res http.ResponseWriter, req *http.Request) {
-	roomID, err := strconv.Atoi(chi.URLParam(req, "id"))
+	pathID := chi.URLParam(req, "id")
+	log.Printf("Receiving room reservation request for Room ID => %v", pathID)
+	roomID, err := strconv.Atoi(pathID)
 	if err != nil {
 		helpers.ServerError(res, err)
 		return

@@ -30,7 +30,7 @@ func (r *Repository) Login(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	id, _, err := r.Database.Authenticate(email, password)
+	id, _, err := r.Database.GetUserByEmailAndPassword(email, password)
 	if err != nil {
 		log.Println(err)
 		r.Config.Session.Put(req.Context(), "error", "Invalid login credentials")

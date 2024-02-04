@@ -43,10 +43,6 @@
             text-align: center;
         }
 
-        .navbar-brand {
-            margin-left: 70px;
-        }
-
         .logo {
             width: 50px;
         }
@@ -57,7 +53,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light row">
         <div class="col-sm-8">
-            <a class="navbar-brand" href="#"><img src="/static/images/logo.png" alt="logo" class="logo"> Bookings.go</a>
+            <a class="navbar-brand ml-5" href="#"><img src="/static/images/logo.png" alt="logo" class="logo"> Bookings.go</a>
         </div>
         <div class="col-sm-5">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -73,21 +69,11 @@
                         <a class="nav-link" href="/about">About <span class="sr-only"></span></a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="/contacts">Contacts <span class="sr-only"></span></a>
-                    </li>
-                    <li class="nav-item dropdown active">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Rooms
-                            <span class="sr-only"></span>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="/generals-quarters">General's Quarters</a>
-                            <a class="dropdown-item" href="/majors-suite">Major's Suite</a>
-                        </div>
-                    </li>
-                    <li class="nav-item active">
                         <a class="nav-link" href="/search-availability">Book Now <span class="sr-only"></span></a>
+                    </li>
+
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/admin/dashboard">Admin <span class="sr-only"></span></a>
                     </li>
                     <li class="nav-item active">
                         {{if eq .IsAuthenticated true}}

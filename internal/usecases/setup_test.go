@@ -64,7 +64,6 @@ func getTestRoutes() http.Handler {
 
 	router.Get("/", Repo.Home)
 	router.Get("/about", Repo.About)
-	router.Get("/contact", Repo.Contact)
 	router.Get("/generals-quarters", Repo.Generals)
 	router.Get("/majors-suite", Repo.Majors)
 
