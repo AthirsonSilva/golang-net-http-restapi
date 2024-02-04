@@ -1,12 +1,14 @@
-package main
+package middlewares
 
 import (
 	"net/http"
 	"testing"
+
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
 )
 
 func TestNoSurf(t *testing.T) {
-	var handler httpHandler
+	var handler config.HttpHandler
 	h := NoSurf(&handler)
 
 	switch v := h.(type) {
@@ -18,7 +20,7 @@ func TestNoSurf(t *testing.T) {
 }
 
 func TestSessionLoads(t *testing.T) {
-	var handler httpHandler
+	var handler config.HttpHandler
 	h := SessionLoad(&handler)
 
 	switch v := h.(type) {

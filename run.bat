@@ -1,2 +1,2 @@
-go build -o app.exe cmd/web/.
+go build -o app.exe cmd/web/main.go
 ./app.exe

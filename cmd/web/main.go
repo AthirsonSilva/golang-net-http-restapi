@@ -13,15 +13,12 @@ import (
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/helpers"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/routes"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/usecases"
 	"github.com/alexedwards/scs/v2"
 )
 
 const port = ":8080"
-
-// Creates instances for both the application's system-wide config and Session manager
-var app config.AppConfig
-var session *scs.SessionManager
 
 func main() {
 	db, err := setupComponents()
@@ -34,7 +31,7 @@ func main() {
 
 	server := &http.Server{
 		Addr:    port,
-		Handler: routes(&app),
+		Handler: routes.Routes(&config.App),
 	}
 
 	if err := server.ListenAndServe(); err != nil {
@@ -51,19 +48,19 @@ func setupComponents() (*database.Database, error) {
 	gob.Register(models.RoomRestriction{})
 
 	// Change to true when in production
-	app.InProduction = false
+	config.App.InProduction = false
 
 	// Initialize loggers
-	app.InfoLog = log.New(os.Stdout, "INFO => ", log.Ldate|log.Ltime)
-	app.ErrorLog = log.New(os.Stdout, "ERROR => ", log.Ldate|log.Ltime|log.Lshortfile)
+	config.App.InfoLog = log.New(os.Stdout, "INFO => ", log.Ldate|log.Ltime)
+	config.App.ErrorLog = log.New(os.Stdout, "ERROR => ", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// Initialize the session manager
-	session = scs.New()
-	session.Lifetime = 24 * time.Hour
-	session.Cookie.Persist = true
-	session.Cookie.SameSite = http.SameSiteLaxMode
-	session.Cookie.Secure = app.InProduction
-	app.Session = session
+	config.Session = scs.New()
+	config.Session.Lifetime = 24 * time.Hour
+	config.Session.Cookie.Persist = true
+	config.Session.Cookie.SameSite = http.SameSiteLaxMode
+	config.Session.Cookie.Secure = config.App.InProduction
+	config.App.Session = config.Session
 
 	// connecting to database
 	log.Println("Connecting to database...")
@@ -75,7 +72,6 @@ func setupComponents() (*database.Database, error) {
 		"root",
 		"bookings",
 	))
-
 	if err != nil {
 		log.Fatal("cannot connect to database")
 		return nil, err
@@ -90,13 +86,13 @@ func setupComponents() (*database.Database, error) {
 		return nil, err
 	}
 
-	app.UseCache = false
-	app.TemplateCache = templateCache
+	config.App.UseCache = false
+	config.App.TemplateCache = templateCache
 
 	// Initialize the handlers
-	repo := usecases.NewRepo(&app, db)
-	render.NewRenderer(&app)
-	helpers.NewHelpers(&app)
+	repo := usecases.NewRepo(&config.App, db)
+	render.NewRenderer(&config.App)
+	helpers.NewHelpers(&config.App)
 	usecases.NewHandlers(repo)
 
 	return db, nil

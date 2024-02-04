@@ -1,22 +1,23 @@
-package main
+package routes
 
 import (
 	"net/http"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
+	"github.com/AthirsonSilva/golang-net-http-restapi/internal/middlewares"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/usecases"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
 
 // Creates a new router to distribute all available endpoints
-func routes(app *config.AppConfig) http.Handler {
+func Routes(app *config.AppConfig) http.Handler {
 	router := chi.NewRouter()
 
 	router.Use(middleware.Recoverer)
-	router.Use(NoSurf)
-	router.Use(SessionLoad)
-	router.Use(WriteToConsole)
+	router.Use(middlewares.NoSurf)
+	router.Use(middlewares.SessionLoad)
+	router.Use(middlewares.WriteToConsole)
 
 	router.Get("/", usecases.Repo.Home)
 	router.Get("/about", usecases.Repo.About)
