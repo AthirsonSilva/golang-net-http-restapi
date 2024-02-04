@@ -11,6 +11,7 @@ import (
 type DatabaseRepository interface {
 	// Reservations methods
 	InsertReservation(reservation models.Reservation) (int, error)
+	GetReservationByID(id int) (models.Reservation, error)
 	GetAllReservations() ([]models.Reservation, error)
 	GetAllNewReservations() ([]models.Reservation, error)
 

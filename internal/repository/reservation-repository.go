@@ -139,3 +139,47 @@ func (r *postgresRepository) GetAllNewReservations() ([]models.Reservation, erro
 
 	return reservations, nil
 }
+
+func (r *postgresRepository) GetReservationByID(id int) (models.Reservation, error) {
+	var reservation models.Reservation
+
+	query := `
+		SELECT 
+			re.id,
+			re.first_name,
+			re.last_name,
+			re.email,
+			re.phone,
+			re.start_date,
+			re.end_date,
+			re.room_id,
+			ro.id,
+			ro.room_name,
+			re.processed
+		FROM reservations re
+		LEFT JOIN rooms ro ON (ro.id = re.room_id)
+		WHERE re.id = $1
+		ORDER BY re.start_date asc
+	`
+
+	row := r.DB.SQL.QueryRow(query, id)
+
+	err := row.Scan(
+		&reservation.ID,
+		&reservation.FirstName,
+		&reservation.LastName,
+		&reservation.Email,
+		&reservation.Phone,
+		&reservation.StartDate,
+		&reservation.EndDate,
+		&reservation.RoomID,
+		&reservation.ID,
+		&reservation.Room.RoomName,
+		&reservation.Processed,
+	)
+	if err != nil {
+		return reservation, err
+	}
+
+	return reservation, nil
+}

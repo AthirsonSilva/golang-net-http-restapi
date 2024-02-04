@@ -1,0 +1,58 @@
+{{template "admin" .}}
+
+{{define "css"}}
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+{{end}}
+
+{{define "page-title"}}
+    Dashboard
+{{end}}
+
+{{define "content"}}
+    <div class="col-md-12">
+        {{$res := index .Data "reservation"}}
+        
+        <table class="table table-striped">
+          <tbody>
+            <tr>
+              <td>Name:</td>
+              <td>{{$res.FirstName}} {{$res.LastName}}</td>
+            </tr>
+            <tr>
+              <td>Arrival:</td>
+              <td>{{fmtDate $res.StartDate}}</td>
+            </tr>
+            <tr>
+              <td>Departure:</td>
+              <td>{{fmtDate $res.EndDate}}</td>
+            </tr>
+            <tr>
+              <td>Email:</td>
+              <td>{{$res.Email}}</td>
+            </tr>
+            <tr>
+              <td>Phone:</td>
+              <td>{{$res.Phone}}</td>
+            </tr>
+            <tr>
+              <td>Room Name:</td>
+              <td>{{$res.Room.RoomName}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+    </div>
+{{end}}
+
+{{define "js"}}
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const dataTable = new simpleDatatables.DataTable("#all-reservations", {
+        select: 3,
+        sort: "desc"
+    })    
+})
+</script>
+{{end}}

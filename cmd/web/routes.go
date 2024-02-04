@@ -47,6 +47,7 @@ func routes(app *config.AppConfig) http.Handler {
 		router.Get("/reservations/new", usecases.Repo.AdminAllNewReservations)
 		router.Get("/reservations/all", usecases.Repo.AdminAllReservations)
 		router.Get("/reservation/calendar", usecases.Repo.AdminReservationsCalendar)
+		router.Get("/reservations/{id}", usecases.Repo.AdminShowSingleReservation)
 	})
 
 	return router
