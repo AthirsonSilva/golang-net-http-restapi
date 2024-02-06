@@ -15,11 +15,12 @@ type User struct {
 }
 
 type Room struct {
-	ID              int
-	RoomName        string
-	RoomDescription string
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	ID          int
+	Name        string
+	Description string
+	ImageUrl    string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 type Restriction struct {

@@ -23,7 +23,7 @@ func (repo *Repository) PostAvailability(res http.ResponseWriter, req *http.Requ
 	}
 
 	for _, room := range rooms {
-		log.Printf("Found room: %v", room.RoomName)
+		log.Printf("Found room: %v", room.Name)
 	}
 
 	if len(rooms) == 0 {

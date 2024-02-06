@@ -24,7 +24,7 @@ func (repo *Repository) MakeReservation(res http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	reservation.Room.RoomName = room.RoomName
+	reservation.Room.Name = room.Name
 
 	repo.Config.Session.Put(req.Context(), "reservation", res)
 

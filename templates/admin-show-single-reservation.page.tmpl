@@ -33,13 +33,13 @@ a {
             <tr>
               <td>First Name:</td>
               <td>
-                <input class="form-control" type="text" required name="first_name" value="{{$res.FirstName}}" />
+                <input class="form-control" type="text" name="first_name" value="{{$res.FirstName}}" disabled />
               </td>
             </tr>
             <tr>
               <td>Last Name:</td>
               <td>
-                <input class="form-control" type="text" required name="last_name" value="{{$res.LastName}}" />
+                <input class="form-control" type="text" name="last_name" value="{{$res.LastName}}" disabled />
               </td>
             </tr>
             <tr>
@@ -57,18 +57,20 @@ a {
             <tr>
               <td>Email:</td>
               <td>
-                <input class="form-control" type="email" required name="email" value="{{$res.Email}}" />
+                <input class="form-control" type="email" name="email" value="{{$res.Email}}" disabled />
               </td>
             </tr>
             <tr>
               <td>Phone:</td>
               <td>
-                <input class="form-control" type="tel" required name="phone" value="{{$res.Phone}}" />
+                <input class="form-control" type="tel" name="phone" value="{{$res.Phone}}" disabled />
               </td>
             </tr>
             <tr>
               <td>Room Name:</td>
-              <td>{{$res.Room.RoomName}}</td>
+              <td>
+                <input class="form-control" type="text" name="room_name" value="{{$res.Room.Name}}" disabled />
+              </td>
             </tr>
             <tr>
               <td>Processed:</td>

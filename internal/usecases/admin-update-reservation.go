@@ -24,10 +24,6 @@ func (r *Repository) AdminUpdateReservation(res http.ResponseWriter, req *http.R
 		helpers.ServerError(res, err)
 	}
 
-	firstName := req.Form.Get("first_name")
-	lastName := req.Form.Get("last_name")
-	email := req.Form.Get("email")
-	phone := req.Form.Get("phone")
 	startDate := req.Form.Get("start_date")
 	endDate := req.Form.Get("end_date")
 
@@ -47,10 +43,6 @@ func (r *Repository) AdminUpdateReservation(res http.ResponseWriter, req *http.R
 
 	newReservation := models.Reservation{
 		ID:        id,
-		FirstName: firstName,
-		LastName:  lastName,
-		Email:     email,
-		Phone:     phone,
 		StartDate: parsedStartDate,
 		EndDate:   parsedEndDate,
 		Processed: processed,

@@ -72,7 +72,7 @@ func (r *postgresRepository) GetAllReservations() ([]models.Reservation, error) 
 			&i.StartDate,
 			&i.EndDate,
 			&i.RoomID,
-			&i.Room.RoomName,
+			&i.Room.Name,
 			&i.Processed,
 		)
 		if err != nil {
@@ -125,7 +125,7 @@ func (r *postgresRepository) GetAllNewReservations() ([]models.Reservation, erro
 			&i.StartDate,
 			&i.EndDate,
 			&i.RoomID,
-			&i.Room.RoomName,
+			&i.Room.Name,
 			&i.Processed,
 		)
 		if err != nil {
@@ -148,7 +148,6 @@ func (r *postgresRepository) GetReservationByID(id int) (models.Reservation, err
 			u.last_name,
 			u.email,
 			u.phone,
-			re.fone,
 			re.start_date,
 			re.end_date,
 			re.room_id,
@@ -172,7 +171,7 @@ func (r *postgresRepository) GetReservationByID(id int) (models.Reservation, err
 		&reservation.StartDate,
 		&reservation.EndDate,
 		&reservation.RoomID,
-		&reservation.Room.RoomName,
+		&reservation.Room.Name,
 		&reservation.Processed,
 	)
 	if err != nil {
