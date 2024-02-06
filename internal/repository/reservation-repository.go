@@ -39,10 +39,10 @@ func (r *postgresRepository) GetAllReservations() ([]models.Reservation, error) 
 	query := `
 		SELECT 
 			re.id,
-			re.first_name,
-			re.last_name,
-			re.email,
-			re.phone,
+			u.first_name,
+			u.last_name,
+			u.email,
+			u.phone,
 			re.start_date,
 			re.end_date,
 			re.room_id,
@@ -50,6 +50,7 @@ func (r *postgresRepository) GetAllReservations() ([]models.Reservation, error) 
 			re.processed
 		FROM reservations re
 		LEFT JOIN rooms ro ON (ro.id = re.room_id)
+		INNER JOIN users u ON (u.id = re.user_id)
 		ORDER BY re.start_date ASC
 	`
 
@@ -90,10 +91,10 @@ func (r *postgresRepository) GetAllNewReservations() ([]models.Reservation, erro
 	query := `
 		SELECT 
 			re.id,
-			re.first_name,
-			re.last_name,
-			re.email,
-			re.phone,
+			u.first_name,
+			u.last_name,
+			u.email,
+			u.phone,
 			re.start_date,
 			re.end_date,
 			re.room_id,
@@ -101,6 +102,7 @@ func (r *postgresRepository) GetAllNewReservations() ([]models.Reservation, erro
 			re.processed
 		FROM reservations re
 		LEFT JOIN rooms ro ON (ro.id = re.room_id)
+		INNER JOIN users u ON (u.id = re.user_id)
 		WHERE re.processed = 0
 		ORDER BY re.start_date asc
 	`
@@ -142,10 +144,11 @@ func (r *postgresRepository) GetReservationByID(id int) (models.Reservation, err
 	query := `
 		SELECT 
 			re.id,
-			re.first_name,
-			re.last_name,
-			re.email,
-			re.phone,
+			u.first_name,
+			u.last_name,
+			u.email,
+			u.phone,
+			re.fone,
 			re.start_date,
 			re.end_date,
 			re.room_id,
@@ -153,6 +156,7 @@ func (r *postgresRepository) GetReservationByID(id int) (models.Reservation, err
 			re.processed
 		FROM reservations re
 		LEFT JOIN rooms ro ON (ro.id = re.room_id)
+		INNER JOIN users u on u.id = re.user_id
 		WHERE re.id = $1
 		ORDER BY re.start_date asc
 	`
@@ -196,10 +200,6 @@ func (r *postgresRepository) UpdateReservation(reservation models.Reservation) e
 	query := `
 		UPDATE reservations
 		SET 
-			first_name = $1,
-			last_name = $2,
-			email = $3,
-			phone = $4,
 			start_date = $5,
 			end_date = $6,
 			processed = $7
@@ -208,10 +208,6 @@ func (r *postgresRepository) UpdateReservation(reservation models.Reservation) e
 
 	_, err := r.DB.SQL.Exec(
 		query,
-		reservation.FirstName,
-		reservation.LastName,
-		reservation.Email,
-		reservation.Phone,
 		reservation.StartDate,
 		reservation.EndDate,
 		reservation.Processed,
