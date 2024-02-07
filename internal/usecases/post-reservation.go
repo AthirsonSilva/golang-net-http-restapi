@@ -26,12 +26,6 @@ func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	err = req.ParseForm()
-	if err != nil {
-		helpers.ServerError(res, err)
-		return
-	}
-
 	raw_start_date := req.Form.Get("start_date")
 	raw_end_date := req.Form.Get("end_date")
 	layout := "2006-01-02"

@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/forms"
@@ -12,6 +13,8 @@ import (
 
 // Responsible for the MakeReservation page
 func (repo *Repository) MakeReservation(res http.ResponseWriter, req *http.Request) {
+	log.Printf("[MakeReservation] passing through make reservation page endpoint")
+
 	reservation, ok := repo.Config.Session.Get(req.Context(), "reservation").(models.Reservation)
 	if !ok {
 		helpers.ServerError(res, errors.New("cannot get reservation from session"))

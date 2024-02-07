@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"runtime/debug"
+	"strings"
 	"time"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/config"
@@ -64,4 +65,12 @@ func JsonResponse(res http.ResponseWriter, status int, data interface{}) {
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(status)
 	res.Write(response)
+}
+
+// GetPathVariableFromRequest extracts the last path variable from request and returns it
+func GetPathVariableFromRequest(req *http.Request) string {
+	path := strings.Split(req.URL.Path, "/")
+	lastIndex := len(path) - 1
+	pathVar := path[lastIndex]
+	return pathVar
 }

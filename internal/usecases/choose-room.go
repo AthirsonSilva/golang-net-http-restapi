@@ -7,14 +7,17 @@ import (
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/helpers"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
-	"github.com/go-chi/chi"
 )
 
 // Responsible for rendering the Choose room page
 func (repo *Repository) ChooseRoom(res http.ResponseWriter, req *http.Request) {
-	pathID := chi.URLParam(req, "id")
-	log.Printf("Receiving room reservation request for Room ID => %v", pathID)
-	roomID, err := strconv.Atoi(pathID)
+	log.Printf("[ChooseRoom] passing through room choosing endpoint => %v", req.URL.Path)
+
+	pathVar := helpers.GetPathVariableFromRequest(req)
+
+	log.Printf("[ChooseRoom] parsing path variables from request %v", pathVar)
+
+	roomID, err := strconv.Atoi(pathVar)
 	if err != nil {
 		helpers.ServerError(res, err)
 		return

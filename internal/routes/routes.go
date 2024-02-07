@@ -21,8 +21,6 @@ func Routes(app *config.AppConfig) http.Handler {
 
 	router.Get("/", usecases.Repo.Home)
 	router.Get("/about", usecases.Repo.About)
-	router.Get("/generals-quarters", usecases.Repo.Generals)
-	router.Get("/majors-suite", usecases.Repo.Majors)
 
 	router.Get("/reservation-summary", usecases.Repo.ReservationSummary)
 	router.Get("/make-reservation", usecases.Repo.MakeReservation)
@@ -31,11 +29,13 @@ func Routes(app *config.AppConfig) http.Handler {
 	router.Get("/search-availability", usecases.Repo.Availability)
 	router.Post("/search-availability-json", usecases.Repo.PostAvailabilityJSON)
 	router.Post("/search-availability", usecases.Repo.PostAvailability)
+	// router.Get("/search-availability/{id}", usecases.Repo.AvailabilityByRoom)
+
 	router.Get("/choose-room/{id}", usecases.Repo.ChooseRoom)
+	router.Get("/find-availability-by-room/{id}", usecases.Repo.FindAvailabilityByRoom)
 
 	router.Get("/login", usecases.Repo.LoginPage)
 	router.Post("/login", usecases.Repo.Login)
-
 	router.Get("/logout", usecases.Repo.Logout)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
