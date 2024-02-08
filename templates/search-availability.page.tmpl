@@ -33,6 +33,8 @@ img {
 
                 <hr>
 
+                <h1>Available rooms</h1>
+
                 {{$rooms := index .Data "rooms"}}
                 <div class="row">
                     {{range $rooms}}
@@ -42,40 +44,10 @@ img {
                           <div class="card-body">
                             <h5 class="card-title">{{.Name}}</h5>
                             <p class="card-text">{{.Description}}</p>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@fat">Open modal for @fat</button>
                           </div>
                         </div>
                       </div>
                     {{end}}
-                </div>
-
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Find availability</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                            <form action="/search-availability" method="post" novalidate class="needs-validation">
-                                <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="row" id="reservation-dates">
-                                            <div class="mb-4">
-                                                <input required class="form-control" type="text" name="start" placeholder="Arrival">
-                                            </div>
-                                            <div class="mb-4">
-                                                <input required class="form-control" type="text" name="end" placeholder="Departure">
-                                            </div>
-                                            <div class="mb-4">
-                                                <button type="submit" class="btn btn-primary">Search Availability</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                      </div>
                 </div>
 
 </div>

@@ -19,8 +19,7 @@
                 <p class="card-text">{{.Description}}</p>
                 <form action="/choose-room" method="POST">
                   <input type="hidden" value="{{.ID}}" name="room_id" />
-                  <!-- <a href="/choose-room/{{.ID}}" class="btn btn-primary btn-large">Choose</a> -->
-                  <input type="submit" class="btn btn-primary btn-large" value="Choose" />
+                  <a href="/choose-room/{{.ID}}" class="btn btn-primary btn-large">Choose</a>
                 </form>
               </div>
           </div>
