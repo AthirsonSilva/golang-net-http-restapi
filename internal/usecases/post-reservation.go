@@ -1,13 +1,12 @@
 package usecases
 
 import (
-	"errors"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/forms"
-	"github.com/AthirsonSilva/golang-net-http-restapi/internal/helpers"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
 )
@@ -16,13 +15,16 @@ import (
 func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Request) {
 	reservation, ok := repo.Config.Session.Get(req.Context(), "reservation").(models.Reservation)
 	if !ok {
-		helpers.ServerError(res, errors.New("cannot get reservation from session"))
+		repo.Config.Session.Put(req.Context(), "error", "Cannot get reservation from session")
+		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
 		return
 	}
 
 	err := req.ParseForm()
 	if err != nil {
-		helpers.ServerError(res, err)
+		log.Println(err)
+		repo.Config.Session.Put(req.Context(), "error", "Cannot parse form")
+		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
 		return
 	}
 
@@ -30,15 +32,22 @@ func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Reque
 	raw_end_date := req.Form.Get("end_date")
 	layout := "2006-01-02"
 
+	log.Printf("Start date => %s", raw_start_date)
+	log.Printf("End date => %s", raw_end_date)
+
 	parsed_start_date, err := time.Parse(layout, raw_start_date)
 	if err != nil {
-		helpers.ServerError(res, err)
+		log.Println(err)
+		repo.Config.Session.Put(req.Context(), "error", "Invalid start date")
+		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
 		return
 	}
 
 	parsed_end_date, err := time.Parse(layout, raw_end_date)
 	if err != nil {
-		helpers.ServerError(res, err)
+		log.Println(err)
+		repo.Config.Session.Put(req.Context(), "error", "Invalid end date")
+		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
 		return
 	}
 
@@ -48,7 +57,9 @@ func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Reque
 	form.MinLength(2, req, "first_name", "last_name")
 
 	if err != nil {
-		helpers.ServerError(res, err)
+		log.Println(err)
+		repo.Config.Session.Put(req.Context(), "error", "Invalid form data")
+		http.Redirect(res, req, "/login", http.StatusSeeOther)
 		return
 	}
 
@@ -64,22 +75,36 @@ func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Reque
 
 	roomID, err := strconv.Atoi(req.Form.Get("room_id"))
 	if err != nil {
-		helpers.ServerError(res, err)
+		log.Println(err)
+		repo.Config.Session.Put(req.Context(), "error", "Could not room associated to reservation")
+		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
 		return
 	}
 
-	reservation.FirstName = req.Form.Get("first_name")
-	reservation.LastName = req.Form.Get("last_name")
-	reservation.Email = req.Form.Get("email")
-	reservation.Phone = req.Form.Get("phone")
+	log.Printf("[PostReservation] Getting user id from session")
+	userID, err := strconv.Atoi(req.Form.Get("user_id"))
+	if err != nil || userID == 0 {
+		log.Println("Could not get user id from session")
+		repo.Config.Session.Put(req.Context(), "error", "Could not verify logged in user")
+		http.Redirect(res, req, "/login", http.StatusSeeOther)
+		return
+	}
+
 	reservation.RoomID = roomID
+	reservation.UserID = userID
 	reservation.StartDate = parsed_start_date
 	reservation.EndDate = parsed_end_date
 
+	log.Printf(
+		"[PostReservation] Reservation => %+v",
+		reservation,
+	)
 	var reservationId int
 	reservationId, err = Repo.Database.InsertReservation(reservation)
 	if err != nil {
-		helpers.ServerError(res, err)
+		log.Println(err)
+		repo.Config.Session.Put(req.Context(), "error", "Could not make reservation")
+		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
 		return
 	}
 
@@ -94,12 +119,19 @@ func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Reque
 		UpdatedAt:     time.Now(),
 	}
 
+	log.Printf(
+		"[PostReservation] Restriction => %+v",
+		restriction,
+	)
 	err = Repo.Database.InsertRoomRestriction(restriction)
 	if err != nil {
-		helpers.ServerError(res, err)
+		log.Println(err)
+		repo.Config.Session.Put(req.Context(), "error", "Could not finish the reservation registering")
+		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
 		return
 	}
 
-	repo.Config.Session.Put(req.Context(), "reservation", res)
+	repo.Config.Session.Put(req.Context(), "reservation", reservation)
+	log.Println("[PostReservation] Reservation created successfully")
 	http.Redirect(res, req, "/reservation-summary", http.StatusSeeOther)
 }

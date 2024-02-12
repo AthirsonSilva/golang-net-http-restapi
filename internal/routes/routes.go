@@ -21,7 +21,7 @@ func Routes(app *config.AppConfig) http.Handler {
 
 	router.Get("/", usecases.Repo.Home)
 	router.Get("/about", usecases.Repo.About)
-	
+
 	router.Get("/reservation-summary", usecases.Repo.ReservationSummary)
 	router.Get("/make-reservation", usecases.Repo.MakeReservation)
 	router.Post("/make-reservation", usecases.Repo.PostReservation)
@@ -29,7 +29,6 @@ func Routes(app *config.AppConfig) http.Handler {
 	router.Get("/search-availability", usecases.Repo.Availability)
 	router.Post("/search-availability-json", usecases.Repo.PostAvailabilityJSON)
 	router.Post("/search-availability", usecases.Repo.PostAvailability)
-	// router.Get("/search-availability/{id}", usecases.Repo.AvailabilityByRoom)
 
 	router.Get("/choose-room/{id}", usecases.Repo.ChooseRoom)
 	router.Get("/find-availability-by-room/{id}", usecases.Repo.FindAvailabilityByRoom)
@@ -42,11 +41,10 @@ func Routes(app *config.AppConfig) http.Handler {
 	router.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
 	router.Route("/admin", func(router chi.Router) {
-		// router.Use(VerifyUserAuthentication)
+		router.Use(middlewares.VerifyUserAuthentication)
 		router.Get("/dashboard", usecases.Repo.AdminDashboard)
 		router.Get("/reservations/new", usecases.Repo.AdminAllNewReservations)
 		router.Get("/reservations/all", usecases.Repo.AdminAllReservations)
-		router.Get("/reservations/calendar", usecases.Repo.AdminReservationsCalendar)
 		router.Get("/reservations/{id}", usecases.Repo.AdminShowSingleReservation)
 		router.Get("/reservations/delete/{id}", usecases.Repo.AdminDeleteReservationByID)
 		router.Post("/reservations/update", usecases.Repo.AdminUpdateReservation)

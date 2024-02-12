@@ -11,12 +11,7 @@ import (
 
 // Responsible for rendering the Choose room page
 func (repo *Repository) ChooseRoom(res http.ResponseWriter, req *http.Request) {
-	log.Printf("[ChooseRoom] passing through room choosing endpoint => %v", req.URL.Path)
-
-	pathVar := helpers.GetPathVariableFromRequest(req)
-
-	log.Printf("[ChooseRoom] parsing path variables from request %v", pathVar)
-
+	pathVar := helpers.PathVar(req)
 	roomID, err := strconv.Atoi(pathVar)
 	if err != nil {
 		helpers.ServerError(res, err)
@@ -30,7 +25,10 @@ func (repo *Repository) ChooseRoom(res http.ResponseWriter, req *http.Request) {
 	}
 
 	reservation.RoomID = roomID
-	repo.Config.Session.Put(req.Context(), "reservation", res)
+	reservation.UserID = repo.Config.Session.GetInt(req.Context(), "user_id")
+	repo.Config.Session.Put(req.Context(), "reservation", reservation)
+
+	log.Println("reservation: ", reservation)
 
 	http.Redirect(res, req, "/make-reservation", http.StatusSeeOther)
 }

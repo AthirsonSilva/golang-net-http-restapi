@@ -15,6 +15,10 @@ func (r *Repository) Login(res http.ResponseWriter, req *http.Request) {
 	err := req.ParseForm()
 	if err != nil {
 		log.Println(err)
+		log.Println(err)
+		r.Config.Session.Put(req.Context(), "error", "Cannot parse form")
+		http.Redirect(res, req, "/login", http.StatusSeeOther)
+		return
 	}
 
 	email := req.Form.Get("email")
@@ -35,6 +39,7 @@ func (r *Repository) Login(res http.ResponseWriter, req *http.Request) {
 		log.Println(err)
 		r.Config.Session.Put(req.Context(), "error", "Invalid login credentials")
 		http.Redirect(res, req, "/login", http.StatusSeeOther)
+		return
 	}
 
 	r.Config.Session.Put(req.Context(), "user_id", id)

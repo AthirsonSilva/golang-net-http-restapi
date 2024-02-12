@@ -10,17 +10,14 @@ func (r *postgresRepository) InsertReservation(reservation models.Reservation) (
 	var reservationID int
 
 	query := `
-						INSERT INTO reservations (first_name, last_name, email, phone, start_date, end_date, room_id, created_at, updated_at)
-						VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+						INSERT INTO reservations (user_id, start_date, end_date, room_id, created_at, updated_at)
+						VALUES ($1, $2, $3, $4, $5, $6)
 						RETURNING id
 					`
 
 	err := r.DB.SQL.QueryRow(
 		query,
-		reservation.FirstName,
-		reservation.LastName,
-		reservation.Email,
-		reservation.Phone,
+		reservation.UserID,
 		reservation.StartDate,
 		reservation.EndDate,
 		reservation.RoomID,

@@ -67,8 +67,8 @@ func JsonResponse(res http.ResponseWriter, status int, data interface{}) {
 	res.Write(response)
 }
 
-// GetPathVariableFromRequest extracts the last path variable from request and returns it
-func GetPathVariableFromRequest(req *http.Request) string {
+// PathVar extracts the last path variable from request and returns it
+func PathVar(req *http.Request) string {
 	path := strings.Split(req.URL.Path, "/")
 	lastIndex := len(path) - 1
 	pathVar := path[lastIndex]
