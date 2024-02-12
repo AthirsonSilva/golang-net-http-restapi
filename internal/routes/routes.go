@@ -38,6 +38,7 @@ func Routes(app *config.AppConfig) http.Handler {
 
 	router.Get("/login", usecases.Repo.LoginPage)
 	router.Post("/login", usecases.Repo.Login)
+	router.Post("/register", usecases.Repo.Register)
 	router.Get("/logout", usecases.Repo.Logout)
 
 	fileServer := http.FileServer(http.Dir("./static/"))

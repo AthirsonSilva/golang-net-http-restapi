@@ -7,6 +7,7 @@ import (
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/forms"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (r *Repository) Login(res http.ResponseWriter, req *http.Request) {
@@ -34,11 +35,20 @@ func (r *Repository) Login(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	id, _, err := r.Database.GetUserByEmailAndPassword(email, password)
-	if err != nil {
+	id, hashedPassword, err := r.Database.GetUserByEmailAndPassword(email, password)
+	if err != nil || id == 0 {
 		log.Println(err)
-		r.Config.Session.Put(req.Context(), "error", "Invalid login credentials")
-		http.Redirect(res, req, "/login", http.StatusSeeOther)
+		RedirectWithError(r, req, res, "Invalid email or password", "/login")
+		return
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	if err == bcrypt.ErrMismatchedHashAndPassword {
+		RedirectWithError(r, req, res, "Invalid email or password", "/login")
+		return
+	} else if err != nil {
+		log.Println(err)
+		RedirectWithError(r, req, res, "Invalid email or password", "/login")
 		return
 	}
 

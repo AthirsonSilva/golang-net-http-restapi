@@ -1,10 +1,7 @@
 package repository
 
 import (
-	"errors"
-
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func (r *postgresRepository) GetUserByEmailAndPassword(
@@ -27,13 +24,6 @@ func (r *postgresRepository) GetUserByEmailAndPassword(
 	err := row.Scan(&id, &hashedPassword)
 	if err != nil {
 		return id, "", err
-	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(testPassword))
-	if err == bcrypt.ErrMismatchedHashAndPassword {
-		return 0, "", errors.New("incorrect password")
-	} else if err != nil {
-		return 0, "", err
 	}
 
 	return id, hashedPassword, nil
@@ -98,4 +88,35 @@ func (r *postgresRepository) UpdateUser(user models.User) error {
 	}
 
 	return nil
+}
+
+func (r *postgresRepository) InsertUser(user models.User) (int, error) {
+	var id int
+	query := `
+		INSERT INTO users (first_name, last_name, email, phone, password, access_level, created_at, updated_at) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		RETURNING id
+	`
+
+	_, err := r.DB.SQL.Exec(
+		query,
+		user.FirstName,
+		user.LastName,
+		user.Email,
+		user.Phone,
+		user.Password,
+		user.AccessLevel,
+		user.CreatedAt,
+		user.UpdatedAt,
+	)
+	if err != nil {
+		return id, err
+	}
+
+	id, _, err = r.GetUserByEmailAndPassword(user.Email, user.Password)
+	if err != nil {
+		return id, err
+	}
+
+	return id, nil
 }

@@ -27,6 +27,7 @@ type DatabaseRepository interface {
 	GetAllRooms() ([]models.Room, error)
 
 	// User methods
+	InsertUser(user models.User) (int, error)
 	GetUserByID(id int) (models.User, error)
 	GetUserByEmailAndPassword(email string, testPassword string) (int, string, error)
 	UpdateUser(user models.User) error
