@@ -59,5 +59,9 @@ func (repo *Repository) PostAvailabilityJSON(res http.ResponseWriter, req *http.
 	}
 
 	available, err := repo.Database.SearchAvailabilityByDateAndRoom(startDate, endDate, roomID)
+	if err != nil {
+		helpers.ServerError(res, err)
+	}
+
 	helpers.JsonResponse(res, http.StatusOK, available)
 }

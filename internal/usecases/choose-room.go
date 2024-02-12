@@ -30,5 +30,5 @@ func (repo *Repository) ChooseRoom(res http.ResponseWriter, req *http.Request) {
 
 	log.Println("reservation: ", reservation)
 
-	http.Redirect(res, req, "/make-reservation", http.StatusSeeOther)
+	http.Redirect(res, req, "/reservations/make-reservation", http.StatusSeeOther)
 }

@@ -15,16 +15,15 @@ import (
 func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Request) {
 	reservation, ok := repo.Config.Session.Get(req.Context(), "reservation").(models.Reservation)
 	if !ok {
-		repo.Config.Session.Put(req.Context(), "error", "Cannot get reservation from session")
-		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
+		log.Println("Cannot get reservation from session")
+		RedirectWithError(repo, req, res, "Cannot get reservation from session", "/")
 		return
 	}
 
 	err := req.ParseForm()
 	if err != nil {
 		log.Println(err)
-		repo.Config.Session.Put(req.Context(), "error", "Cannot parse form")
-		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
+		RedirectWithError(repo, req, res, "Could not parse form", "/")
 		return
 	}
 
@@ -38,16 +37,14 @@ func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Reque
 	parsed_start_date, err := time.Parse(layout, raw_start_date)
 	if err != nil {
 		log.Println(err)
-		repo.Config.Session.Put(req.Context(), "error", "Invalid start date")
-		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
+		RedirectWithError(repo, req, res, "Invalid start date", "/")
 		return
 	}
 
 	parsed_end_date, err := time.Parse(layout, raw_end_date)
 	if err != nil {
 		log.Println(err)
-		repo.Config.Session.Put(req.Context(), "error", "Invalid end date")
-		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
+		RedirectWithError(repo, req, res, "Invalid end date", "/")
 		return
 	}
 
@@ -55,13 +52,6 @@ func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Reque
 	form.Required("first_name", "last_name", "email", "phone", "start_date", "end_date")
 	form.IsEmail("email")
 	form.MinLength(2, req, "first_name", "last_name")
-
-	if err != nil {
-		log.Println(err)
-		repo.Config.Session.Put(req.Context(), "error", "Invalid form data")
-		http.Redirect(res, req, "/login", http.StatusSeeOther)
-		return
-	}
 
 	if !form.Valid() {
 		data := make(map[string]interface{})
@@ -76,8 +66,7 @@ func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Reque
 	roomID, err := strconv.Atoi(req.Form.Get("room_id"))
 	if err != nil {
 		log.Println(err)
-		repo.Config.Session.Put(req.Context(), "error", "Could not room associated to reservation")
-		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
+		RedirectWithError(repo, req, res, "Could not get room id", "/")
 		return
 	}
 
@@ -85,8 +74,14 @@ func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Reque
 	userID, err := strconv.Atoi(req.Form.Get("user_id"))
 	if err != nil || userID == 0 {
 		log.Println("Could not get user id from session")
-		repo.Config.Session.Put(req.Context(), "error", "Could not verify logged in user")
-		http.Redirect(res, req, "/login", http.StatusSeeOther)
+		RedirectWithError(repo, req, res, "Could not get user id from session", "/login")
+		return
+	}
+
+	user, err := Repo.Database.GetUserByID(userID)
+	if err != nil {
+		log.Println(err)
+		RedirectWithError(repo, req, res, "Could not get user from session", "/login")
 		return
 	}
 
@@ -94,6 +89,10 @@ func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Reque
 	reservation.UserID = userID
 	reservation.StartDate = parsed_start_date
 	reservation.EndDate = parsed_end_date
+	reservation.FirstName = user.FirstName
+	reservation.LastName = user.LastName
+	reservation.Email = user.Email
+	reservation.Phone = user.Phone
 
 	log.Printf(
 		"[PostReservation] Reservation => %+v",
@@ -103,8 +102,7 @@ func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Reque
 	reservationId, err = Repo.Database.InsertReservation(reservation)
 	if err != nil {
 		log.Println(err)
-		repo.Config.Session.Put(req.Context(), "error", "Could not make reservation")
-		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
+		RedirectWithError(repo, req, res, "Could not make reservation", "/")
 		return
 	}
 
@@ -125,13 +123,13 @@ func (repo *Repository) PostReservation(res http.ResponseWriter, req *http.Reque
 	)
 	err = Repo.Database.InsertRoomRestriction(restriction)
 	if err != nil {
-		log.Println(err)
-		repo.Config.Session.Put(req.Context(), "error", "Could not finish the reservation registering")
-		http.Redirect(res, req, "/search-availability", http.StatusSeeOther)
+		RedirectWithError(repo, req, res, "Could not make reservation", "/")
 		return
 	}
 
-	repo.Config.Session.Put(req.Context(), "reservation", reservation)
 	log.Println("[PostReservation] Reservation created successfully")
-	http.Redirect(res, req, "/reservation-summary", http.StatusSeeOther)
+
+	repo.Config.Session.Put(req.Context(), "reservation", reservation)
+	// http.Redirect(res, req, "/reservations/reservation-summary", http.StatusSeeOther)
+	repo.ReservationSummary(res, req)
 }

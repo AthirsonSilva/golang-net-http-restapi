@@ -22,9 +22,12 @@ func Routes(app *config.AppConfig) http.Handler {
 	router.Get("/", usecases.Repo.Home)
 	router.Get("/about", usecases.Repo.About)
 
-	router.Get("/reservation-summary", usecases.Repo.ReservationSummary)
-	router.Get("/make-reservation", usecases.Repo.MakeReservation)
-	router.Post("/make-reservation", usecases.Repo.PostReservation)
+	router.Route("/reservations", func(router chi.Router) {
+		router.Use(middlewares.VerifyUserAuthentication)
+		router.Get("/reservation-summary", usecases.Repo.ReservationSummary)
+		router.Get("/make-reservation", usecases.Repo.MakeReservation)
+		router.Post("/make-reservation", usecases.Repo.PostReservation)
+	})
 
 	router.Get("/search-availability", usecases.Repo.Availability)
 	router.Post("/search-availability-json", usecases.Repo.PostAvailabilityJSON)
