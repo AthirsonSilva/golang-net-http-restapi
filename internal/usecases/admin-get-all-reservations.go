@@ -1,9 +1,9 @@
 package usecases
 
 import (
+	"log"
 	"net/http"
 
-	"github.com/AthirsonSilva/golang-net-http-restapi/internal/helpers"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/models"
 	"github.com/AthirsonSilva/golang-net-http-restapi/internal/render"
 )
@@ -11,7 +11,9 @@ import (
 func (r *Repository) AdminAllReservations(res http.ResponseWriter, req *http.Request) {
 	reservations, err := r.Database.GetAllReservations()
 	if err != nil {
-		helpers.ServerError(res, err)
+		log.Println(err)
+		RedirectWithError(r, req, res, "Error getting all reservations", "admin-all-reservations")
+		return
 	}
 
 	data := make(map[string]interface{})

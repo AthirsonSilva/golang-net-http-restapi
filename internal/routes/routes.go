@@ -44,7 +44,7 @@ func Routes(app *config.AppConfig) http.Handler {
 	router.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
 	router.Route("/admin", func(router chi.Router) {
-		router.Use(middlewares.VerifyUserAuthentication)
+		// router.Use(middlewares.VerifyUserAuthentication)
 		router.Get("/dashboard", usecases.Repo.AdminDashboard)
 		router.Get("/reservations/new", usecases.Repo.AdminAllNewReservations)
 		router.Get("/reservations/all", usecases.Repo.AdminAllReservations)

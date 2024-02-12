@@ -16,12 +16,16 @@ func (r *Repository) AdminUpdateReservation(res http.ResponseWriter, req *http.R
 
 	err := req.ParseForm()
 	if err != nil {
-		helpers.ServerError(res, err)
+		log.Println(err)
+		RedirectWithError(r, req, res, "Error parsing form", "/admin/reservations/all")
+		return
 	}
 
 	id, err := strconv.Atoi(req.Form.Get("id"))
 	if err != nil {
-		helpers.ServerError(res, err)
+		log.Println(err)
+		RedirectWithError(r, req, res, "Error parsing id", "/admin/reservations/all")
+		return
 	}
 
 	startDate := req.Form.Get("start_date")
@@ -49,6 +53,11 @@ func (r *Repository) AdminUpdateReservation(res http.ResponseWriter, req *http.R
 	}
 
 	err = r.Database.UpdateReservation(newReservation)
+	if err != nil {
+		log.Println(err)
+		RedirectWithError(r, req, res, "Error updating reservation", "/admin/reservations/all")
+		return
+	}
 
 	data := make(map[string]interface{})
 	data["reservation"] = reservation
